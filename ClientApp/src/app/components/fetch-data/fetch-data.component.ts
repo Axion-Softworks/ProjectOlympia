@@ -28,6 +28,6 @@ export class FetchDataComponent {
     if (medals.length < 1)
       return "";
 
-    return medals.map(medal => medal.discipline).join(", ");
+    return medals.map(medal => medal.event).join(", ");
   }
 }

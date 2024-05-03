@@ -9,12 +9,18 @@ public class Athlete
 
     public string Description { get; set; }
 
+    public string Discipline { get; set; }
+    
+    public string Country { get; set; }
+
     public List<Medal> Medals { get; set; }
 
-    public Athlete(string name, string description, List<Medal> medals)
+    public Athlete(string name, string description, string discipline, string country, List<Medal> medals)
     {
         Name = name;
         Description = description;
+        Discipline = discipline;
+        Country = country;
         Medals = medals;
     }
 }

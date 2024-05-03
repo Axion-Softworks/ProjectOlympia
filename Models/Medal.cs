@@ -4,13 +4,13 @@ public class Medal
 {
     public Guid Id { get; set; }
 
-    public string Discipline { get; set; }
+    public string Event { get; set; }
 
     public EPlace Place { get; set; }
     
-    public Medal(string discipline, EPlace place)
+    public Medal(string Event, EPlace place)
     {
-        Discipline = discipline;
+        this.Event = Event;
         Place = place;
     }
 }
