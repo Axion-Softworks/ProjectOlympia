@@ -16,3 +16,11 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+nav {
+  background-color:  #212529 !important; 
+}
+
+a {
+  color: rgb(209, 205, 199) !important;
+}

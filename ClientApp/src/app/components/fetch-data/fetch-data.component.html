@@ -4,23 +4,67 @@
 
 <p *ngIf="!athletes?.length"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="athletes.length">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Gold</th>
-      <th>Silver</th>
-      <th>Bronze</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let athlete of athletes">
-      <td>{{ athlete.name }}</td>
-      <td>{{ athlete.description }}</td>
-      <td>{{ getMedals(athlete, ePlace.gold) }}</td>
-      <td>{{ getMedals(athlete, ePlace.silver) }}</td>
-      <td>{{ getMedals(athlete, ePlace.bronze) }}</td>
-    </tr>
-  </tbody>
-</table>
+<mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+  <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+    <athlete-card [athlete]="athlete"></athlete-card>
+  </mat-grid-tile>
+
+
+</mat-grid-list>
