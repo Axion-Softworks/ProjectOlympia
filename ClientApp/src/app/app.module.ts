@@ -15,7 +15,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
     CounterComponent
   ],
   imports: [
