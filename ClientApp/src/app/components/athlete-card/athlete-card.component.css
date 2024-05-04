@@ -55,3 +55,9 @@
   flex-direction: column;
   justify-content: space-around;
 }
+
+.discipline-image {
+  /* -webkit-filter: invert(1); */
+   /* filter: invert(1); */
+  max-width: 90px;
+}
