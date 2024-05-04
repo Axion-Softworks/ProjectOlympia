@@ -1,0 +1,24 @@
+<mat-card class="athlete-card">
+    <div *ngIf="athlete == undefined">
+        <div>Loading...</div>
+        <mat-spinner class="spinner"></mat-spinner>
+    </div>
+    <div *ngIf="athlete != undefined" class="athlete-parent">
+        <div class="country-name">
+            <div>
+                {{athlete.country}}
+            </div>
+            <div>
+                {{athlete.name}}
+            </div>
+        </div>
+        <div class="discipline">
+            {{athlete.discipline}}
+        </div>
+        <div class="info-parent">
+            <mat-icon class="info material-icons-outlined" matTooltip="{{athlete.description}}">
+                info
+            </mat-icon>
+        </div>
+    </div>
+</mat-card>
