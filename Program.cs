@@ -4,6 +4,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+// Auto Mapper Configurations
+var mappingConfig = new AutoMapper.MapperConfiguration(mc =>
+{
+    mc.AddProfile(new ProjectOlympia.MappingProfile());
+});
+
+AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

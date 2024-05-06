@@ -1,10 +1,7 @@
 namespace ProjectOlympia;
 
-public class Athlete
+public class AthleteData
 {
-
-    public Guid Id { get; set; }
-
     public string Surname { get; set; }
 
     public string Forename { get; set; }
@@ -19,9 +16,7 @@ public class Athlete
 
     public string ISO { get; set; }
 
-    public List<Medal> Medals { get; set; }
-
-    public Athlete(string Forename, string Surname, string Description, string Discipline, string Country, string CountryCode, string ISO, List<Medal> medals)
+    public AthleteData(string Forename, string Surname, string Description, string Discipline, string Country, string CountryCode, string ISO)
     {
         this.Forename = Forename;
         this.Surname = Surname;
@@ -30,6 +25,5 @@ public class Athlete
         this.Country = Country;
         this.CountryCode = CountryCode;
         this.ISO = ISO;
-        Medals = medals;
     }
 }

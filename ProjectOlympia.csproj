@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="automapper" Version="13.0.1" />
+    <PackageReference Include="CsvHelper" Version="32.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.1" />
   </ItemGroup>
 
