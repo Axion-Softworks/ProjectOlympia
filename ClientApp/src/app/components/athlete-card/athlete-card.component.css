@@ -31,7 +31,15 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+.country {
+  padding-left: 12px;
+}
+
+.name {
+  padding-right: 12px;
 }
 
 .discipline {

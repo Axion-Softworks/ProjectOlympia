@@ -5,11 +5,11 @@
     </div>
     <div *ngIf="athlete != undefined" class="athlete-parent">
         <div class="country-name">
-            <div>
-                <span class="fi fi-{{athlete.country}}"></span>
+            <div matTooltip="{{athlete.country}}" class="country">
+                <span class="fi fi-{{athlete.iso}}" ></span>
             </div>
-            <div>
-                {{athlete.name}}
+            <div class="name">
+                {{athlete.forename}} {{athlete.surname}}
             </div>
         </div>
         <div class="discipline">
