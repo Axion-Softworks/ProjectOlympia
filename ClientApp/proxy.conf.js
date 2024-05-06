@@ -13,6 +13,12 @@ const PROXY_CONFIG = [
     headers: {
       Connection: 'Keep-Alive'
     }
+  },
+  {
+    context: ["/ws"],
+    target: target,
+    secure: false,
+    ws: true
   }
 ]
 
