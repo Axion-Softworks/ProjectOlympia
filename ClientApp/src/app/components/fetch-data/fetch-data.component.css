@@ -5,3 +5,19 @@ th, tr {
 .card-parent {
   height: 800px;
 }
+
+.sort-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.button {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.sort-button {
+  background: #373d43;
+  color: white;
+}

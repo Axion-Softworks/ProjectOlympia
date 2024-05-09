@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-fetch-data',
@@ -17,6 +18,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 
     MatTooltipModule, 
     MatGridListModule,
+    MatButtonToggleModule,
 
     AthleteCardComponent
   ]
@@ -34,19 +36,12 @@ export class FetchDataComponent {
 
   public athletes: Athlete[] = [];
   public ePlace = EPlace;
-  public rowHeight = "2:1";
+  public rowHeight = "1:1";
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Athlete[]>(baseUrl + 'api/athlete').subscribe(result => {
+    http.post<Athlete[]>(baseUrl + 'api/data', {"filename": "ExampleData(Complete).csv"}).subscribe(result => {
       this.athletes = result;
     }, error => console.error(error));
-
-    if (window.innerWidth >= 1200) {
-      this.rowHeight = "2:1";
-    }
-    else {
-      this.rowHeight = "1:1";
-    }
   }
 
   getMedals(athlete: Athlete, place: EPlace) : number {
@@ -61,5 +56,52 @@ export class FetchDataComponent {
       return "";
 
     return medals.map(medal => medal.event).join(", ");
+  }
+
+  sortAthletes(sort: string): void {  
+    switch (sort) {
+      case "country":
+          this.athletes.sort((a, b) => {
+            if ( a.country < b.country ){
+            return -1;
+            }
+            if ( a.country > b.country ){
+              return 1;
+            }
+            return 0;
+          });
+    
+        break;
+    
+      case "discipline":
+        this.athletes.sort((a, b) => {
+          if ( a.discipline < b.discipline ){
+          return -1;
+          }
+          if ( a.discipline > b.discipline ){
+            return 1;
+          }
+          return 0;
+        });
+    
+        break;
+
+      case "name":
+        this.athletes.sort((a, b) => {
+          if ( a.surname < b.surname ){
+          return -1;
+          }
+          if ( a.surname > b.surname ){
+            return 1;
+          }
+          return 0;
+        });
+    
+        break;
+
+      default:
+        break;
+    }
+
   }
 }

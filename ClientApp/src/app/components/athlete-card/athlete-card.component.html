@@ -8,8 +8,13 @@
             <div matTooltip="{{athlete.country}}" class="country">
                 <span class="fi fi-{{athlete.iso}}" ></span>
             </div>
-            <div class="name">
-                {{athlete.forename}} {{athlete.surname}}
+            <div class="names">
+                <div class="surname">
+                    <b>{{athlete.surname}}</b>
+                </div>
+                <div class="forename">
+                    {{athlete.forename}}
+                </div>
             </div>
         </div>
         <div class="discipline">

@@ -4,6 +4,14 @@
 
 <p *ngIf="!athletes?.length"><em>Loading...</em></p>
 
+<div class="sort-buttons">
+  <mat-button-toggle-group name="athleteSort" aria-label="Sort Athletes" (change)="sortAthletes($event.value)" value="country">
+    <mat-button-toggle class="sort-button" value="country">Country</mat-button-toggle>
+    <mat-button-toggle class="sort-button" value="discipline">Discipline</mat-button-toggle>
+    <mat-button-toggle class="sort-button" value="name">Name</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
 <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
   <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
     <athlete-card [athlete]="athlete"></athlete-card>

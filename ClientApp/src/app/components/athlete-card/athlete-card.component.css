@@ -17,13 +17,21 @@
     min-height: 80px;
     font-size: small;
   }
+
+  .forename {
+    font-size: x-small;
+  }
 }
 
 @media only screen and (min-width: 1200px) {
   .athlete-card {
-    min-width: 230px;
-    min-height: 100px;
+    min-width: 200px;
+    min-height: 200px;
     font-size: large
+  }
+
+  .forename {
+    font-size: medium;
   }
 }
 
@@ -31,15 +39,17 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
 }
 
 .country {
   padding-left: 12px;
 }
 
-.name {
+.names {
   padding-right: 12px;
+  padding-left: 12px;
+  display: flex;
+  flex-direction: column;
 }
 
 .discipline {
@@ -54,7 +64,7 @@
 
 .info-parent {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .athlete-parent {
@@ -67,5 +77,5 @@
 .discipline-image {
   /* -webkit-filter: invert(1); */
    /* filter: invert(1); */
-  max-width: 90px;
+  max-width: 200px;
 }
