@@ -24,3 +24,7 @@ nav {
 a {
   color: rgb(209, 205, 199) !important;
 }
+
+.log-out-button {
+  cursor: pointer;
+}
