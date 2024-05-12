@@ -15,7 +15,7 @@ import { Player } from 'src/app/models/player';
     ],
     templateUrl: './player-panel.component.html',
     styleUrl: './player-panel.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
 })
 export class PlayerPanelComponent { 
     @Input() player!: Player;

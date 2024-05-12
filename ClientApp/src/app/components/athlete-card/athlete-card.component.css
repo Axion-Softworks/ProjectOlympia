@@ -6,6 +6,12 @@
   max-width: 40px;
 }
 
+.athlete-card-disabled {
+  background-color: #2e3134 !important;
+  color: rgb(209, 205, 199) !important;
+  opacity: 0.5;
+}
+
 .athlete-card {
   background-color:  #373d43 !important; 
   color: rgb(209, 205, 199) !important;
@@ -23,6 +29,12 @@
     font-size: small;
   }
 
+  .athlete-card-disabled {
+    min-width: 130px;
+    min-height: 80px;
+    font-size: small;
+  }
+
   .forename {
     font-size: x-small;
   }
@@ -30,6 +42,12 @@
 
 @media only screen and (min-width: 1200px) {
   .athlete-card {
+    min-width: 200px;
+    min-height: 200px;
+    font-size: large
+  }
+
+  .athlete-card-disabled {
     min-width: 200px;
     min-height: 200px;
     font-size: large

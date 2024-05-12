@@ -50,28 +50,6 @@ export class FetchDataComponent {
     http.post<Athlete[]>(baseUrl + 'api/data', {"filename": "ExampleData(Complete).csv"}).subscribe(result => {
       this.athletes = result;
 
-      var test = 2;
-
-      this.players.forEach((player) => {
-        var i = 0;
-        while (i <= test) {
-          if (i == 0) {
-            var ath = this.athletes.find(f => f.forename == "Sharon"); //long name test
-            if (ath)
-              player.athletes.push(ath);
-
-            i++;
-            continue;
-          }
-              
-
-          var random = _.sample(this.athletes);
-          if (random)
-          player.athletes.push(random);
-
-          i++;
-        }
-      })
     }, error => console.error(error));
 
   }
@@ -135,5 +113,29 @@ export class FetchDataComponent {
         break;
     }
 
+  }
+
+  getCurrentPlayerIndex(): number {
+    var user = JSON.parse(sessionStorage.getItem('user') as string);
+
+    //var index = this.players.findIndex(f => f.id == user.id);
+    var index = this.players.findIndex(f => f.name == user.name);
+
+    return index;
+  }
+
+  onDraftPickEmitted(athlete: Athlete): void {
+    var player = this.players[this.getCurrentPlayerIndex()];
+
+    player.athletes.push(athlete);
+
+    this.players[this.getCurrentPlayerIndex()] = player;
+  }
+
+  athleteIsDrafted(athlete: Athlete): boolean {
+    // var drafted = this.players.find(f => f.athletes.find(g => g.id == athlete.id)) == undefined ? false : true;
+    var drafted = this.players.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
+
+    return drafted;
   }
 }

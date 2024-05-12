@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.confirm-dialog {
+  background-color:  #373d43 !important; 
+  color: rgb(209, 205, 199) !important;
+}
+
+.white-text {
+  color: rgb(209, 205, 199) !important;
+}
+
+.button-group {
+  justify-content: space-between;
+}
+
+.country-name {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.country {
+  padding-right: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}

@@ -1,0 +1,18 @@
+<div class="confirm-dialog">
+    <h2 class="white-text" mat-dialog-title>Draft Athlete</h2>
+    <mat-dialog-content>
+        <div class="country-name">
+            <p class="white-text pr-12">{{athlete.forename}} {{athlete.surname}}</p>
+            <div matTooltip="{{athlete.country}}" class="country">
+                <span class="fi fi-{{athlete.iso}}"></span>
+                <p class="white-text pl-6">{{athlete.country}}</p>
+            </div>
+        </div>
+        <p class="white-text">Discipline: {{athlete.discipline}}</p>
+        <p class="white-text">{{athlete.description}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions class="button-group">
+        <button class="white-text" mat-raised-button color="warn" (click)="onNoClick()">No Thanks</button>
+        <button class="white-text button-affirmative" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+    </mat-dialog-actions>
+</div>
