@@ -7,6 +7,10 @@ import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { Player } from 'src/app/models/player';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { PlayerPanelComponent } from '../player-panel/player-panel.component';
+import * as _ from 'lodash'; 
 
 @Component({
   selector: 'app-fetch-data',
@@ -19,29 +23,57 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatTooltipModule, 
     MatGridListModule,
     MatButtonToggleModule,
+    MatExpansionModule,
 
-    AthleteCardComponent
+    AthleteCardComponent,
+    PlayerPanelComponent
   ]
 })
 export class FetchDataComponent {
-  @HostListener('window:resize', ['$event.target.innerWidth'])
-  onResize(width: number) {
-    if (width >= 1200) {
-      this.rowHeight = "2:1";
-    }
-    else {
-      this.rowHeight = "1:1";
-    }
-  }
+  // @HostListener('window:resize', ['$event.target.innerWidth'])
+  // onResize(width: number) {
+  //   if (width >= 1200) {
+  //     this.rowHeight = "2:1";
+  //   }
+  //   else {
+  //     this.rowHeight = "1:1";
+  //   }
+  // }
 
   public athletes: Athlete[] = [];
   public ePlace = EPlace;
+  public players: Player[] = [{id: '0', name: 'Kyle', athletes: []}, {id: '1', name: 'Emily', athletes: []}];
+
   public rowHeight = "1:1";
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     http.post<Athlete[]>(baseUrl + 'api/data', {"filename": "ExampleData(Complete).csv"}).subscribe(result => {
       this.athletes = result;
+
+      var test = 2;
+
+      this.players.forEach((player) => {
+        var i = 0;
+        while (i <= test) {
+          if (i == 0) {
+            var ath = this.athletes.find(f => f.forename == "Sharon"); //long name test
+            if (ath)
+              player.athletes.push(ath);
+
+            i++;
+            continue;
+          }
+              
+
+          var random = _.sample(this.athletes);
+          if (random)
+          player.athletes.push(random);
+
+          i++;
+        }
+      })
     }, error => console.error(error));
+
   }
 
   getMedals(athlete: Athlete, place: EPlace) : number {

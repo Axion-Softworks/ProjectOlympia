@@ -9,6 +9,11 @@
 .athlete-card {
   background-color:  #373d43 !important; 
   color: rgb(209, 205, 199) !important;
+  cursor: pointer;
+}
+
+.athlete-card :hover {
+  background-color: #474f57 !important;
 }
 
 @media only screen and (min-width: 600px) {

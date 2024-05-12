@@ -1,4 +1,4 @@
-<mat-card class="athlete-card">
+<mat-card class="athlete-card" (click)="onCardClick()">
     <div *ngIf="athlete == undefined">
         <div>Loading...</div>
         <mat-spinner class="spinner"></mat-spinner>

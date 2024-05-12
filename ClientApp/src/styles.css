@@ -26,3 +26,7 @@ body {
   background-color:  #212529 !important; 
   color: rgb(209, 205, 199) !important;
 }
+
+.pb-12 {
+  padding-bottom: 12px;
+}

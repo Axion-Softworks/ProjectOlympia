@@ -25,4 +25,7 @@ import { Athlete } from 'src/app/models/athlete';
 export class AthleteCardComponent { 
     @Input() athlete!: Athlete;
 
+    onCardClick() : void {
+        console.log("KB - cardclick", this.athlete)
+    }
 }

@@ -10,6 +10,7 @@ th, tr {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding-top: 20px;
 }
 
 .button {
@@ -20,4 +21,14 @@ th, tr {
 .sort-button {
   background: #373d43;
   color: white;
+  min-width: 220px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 220px auto;
+}
+
+.players-section {
+  padding-top: 12px;
 }

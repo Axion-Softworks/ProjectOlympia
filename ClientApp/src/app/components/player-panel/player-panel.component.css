@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.athlete-details-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.country-name {
+  display: flex;
+  flex-direction: row;
+}
+
+.player-panel {
+  background-color:  #373d43 !important; 
+  color: rgb(209, 205, 199) !important;
+}
+
+.country {
+  padding-right: 12px;
+}
+
+.info {
+  font-size: 15px;
+  padding-left: 12px;
+}

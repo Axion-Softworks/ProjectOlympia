@@ -1,0 +1,26 @@
+<mat-expansion-panel class="player-panel" hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title class="player-panel">
+        {{player.name}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    @if(player.athletes.length < 1) {
+      <p>No athletes drafted</p>
+    }
+    @else {
+      @for (athlete of player.athletes; track athlete) {
+        <div class="athlete-details-container">
+          <div class="country-name">
+            <div matTooltip="{{athlete.country}}" class="country">
+              <span class="fi fi-{{athlete.iso}}"></span>
+            </div>          
+            <div>{{athlete.surname}}</div>
+          </div>
+          <mat-icon class="info material-icons-outlined" matTooltip="{{athlete.discipline}}: {{athlete.description}}">
+            info
+          </mat-icon> 
+        </div>
+      }
+    }
+    
+</mat-expansion-panel>
