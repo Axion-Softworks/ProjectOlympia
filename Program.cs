@@ -1,4 +1,5 @@
 using ProjectOlympia;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddSingleton<IWebSocketHandler, WebSocketHandler>();
+
+builder.Services.AddDbContext<DraftingContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectOlympiaConnectionString")));
 
 var app = builder.Build();
 
