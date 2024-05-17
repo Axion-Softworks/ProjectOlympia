@@ -1,3 +1,5 @@
+using ProjectOlympia;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +14,8 @@ var mappingConfig = new AutoMapper.MapperConfiguration(mc =>
 
 AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
+builder.Services.AddSingleton<IWebSocketHandler, WebSocketHandler>();
 
 var app = builder.Build();
 

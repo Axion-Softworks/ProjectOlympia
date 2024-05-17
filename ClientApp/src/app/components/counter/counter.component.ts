@@ -1,4 +1,5 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-counter-component',
@@ -6,32 +7,12 @@ import { Component, Inject } from '@angular/core';
 })
 export class CounterComponent {
   public currentCount = 0;
-  public webSocketConnected: boolean = false;
+  public get webSocketConnected(): boolean {
+    return this.webSocket.connected;
+  }
 
-  private webSocket: WebSocket;
-
-  constructor(@Inject("BASE_URL") baseUrl: string) {
-    this.webSocket = new WebSocket(`${baseUrl}ws`);
-
-    this.webSocket.onerror = (ev: Event) => {
-      this.log("Web Socket error", ev);
-    };
-
-    this.webSocket.onopen = (ev: Event) => {
-      this.log("Web Socket open", ev);
-
-      this.webSocketConnected = true;
-    };
-
-    this.webSocket.onclose = (ev: Event) => {
-      this.log("Web Socket close", ev);
-
-      this.webSocketConnected = false;
-    };
-
-    this.webSocket.onmessage = (ev: Event) => {
-      this.log("Web Socket message", ev);
-    };
+  constructor(private webSocket: WebSocketService) {
+    this.webSocket.send("TEST");
   }
 
   public incrementCounter() {
@@ -57,14 +38,5 @@ export class CounterComponent {
     const json: string = JSON.stringify(obj);
 
     this.webSocket.send(json);
-  }
-
-  private log(message: string, value: any = null) {
-    if (!value) {
-      console.log(`[${new Date().toISOString()}] ${message}`);
-    }
-    else {
-      console.log(`[${new Date().toISOString()}] ${message}`, value);
-    }
   }
 }

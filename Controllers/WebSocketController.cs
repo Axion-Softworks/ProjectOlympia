@@ -10,15 +10,22 @@ namespace ProjectOlympia.Controllers
 
     public class WebSocketController : ControllerBase
     {
-        public WebSocketController()
+        private readonly ILogger<WebSocketController> logger;
+        private readonly IWebSocketHandler webSocketHandler;
+
+        public WebSocketController(
+            ILogger<WebSocketController> logger,
+            IWebSocketHandler webSocketHandler
+        )
         {
-            Console.WriteLine();
+            this.logger = logger;
+            this.webSocketHandler = webSocketHandler;
         }
 
         [Route("/ws")]
         public async Task Test()
         {
-            if (HttpContext.WebSockets.IsWebSocketRequest == false)
+            if (this.HttpContext.WebSockets.IsWebSocketRequest == false)
             {
                 this.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
 
@@ -27,35 +34,7 @@ namespace ProjectOlympia.Controllers
 
             using WebSocket webSocket = await this.HttpContext.WebSockets.AcceptWebSocketAsync();
             
-            await Echo(webSocket);
-        }
-
-        private static async Task Echo(WebSocket webSocket)
-        {
-            var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult receiveResult = await webSocket.ReceiveAsync(
-                new ArraySegment<byte>(buffer), CancellationToken.None
-            );
-
-            while (!receiveResult.CloseStatus.HasValue)
-            {
-                await webSocket.SendAsync(
-                    new ArraySegment<byte>(buffer, 0, receiveResult.Count),
-                    receiveResult.MessageType,
-                    receiveResult.EndOfMessage,
-                    CancellationToken.None
-                );
-
-                receiveResult = await webSocket.ReceiveAsync(
-                    new ArraySegment<byte>(buffer), CancellationToken.None
-                );
-            }
-
-            await webSocket.CloseAsync(
-                receiveResult.CloseStatus.Value,
-                receiveResult.CloseStatusDescription,
-                CancellationToken.None
-            );
+            await this.webSocketHandler.Handle(Guid.NewGuid(), webSocket);
         }
     }
 }
