@@ -1,6 +1,6 @@
 @if (!loggedIn) {
   <h1>Login</h1>
-  <form class="login-form" [formGroup]="formgroup">
+  <form class="login-form" [formGroup]="formgroup" (ngSubmit)="login()">
     <mat-form-field class="example-full-width">
       <mat-label>Username</mat-label>
       <input matInput formControlName="username">
@@ -11,7 +11,7 @@
       <input matInput type="password" formControlName="password">
     </mat-form-field>
 
-    <button mat-raised-button type="button" (click)="login()">Login</button>
+    <button mat-raised-button type="submit" (click)="login()">Login</button>
   </form>
 }
 @else {
