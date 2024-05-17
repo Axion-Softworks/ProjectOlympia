@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +14,9 @@ var mappingConfig = new AutoMapper.MapperConfiguration(mc =>
 
 AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
+builder.Services.AddDbContext<DraftingContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectOlympiaConnectionString")));
 
 var app = builder.Build();
 

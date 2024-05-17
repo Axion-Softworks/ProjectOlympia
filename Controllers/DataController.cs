@@ -31,7 +31,7 @@ public class DataController : ControllerBase
             {
                 MissingFieldFound = null
             };
-            using (var reader = new StreamReader($@"Data\{request.Filename}"))
+            using (var reader = new StreamReader($@"Data\Files\{request.Filename}"))
             using (var csv = new CsvReader(reader, config))
             {
                 records = csv.GetRecords<AthleteData>().ToList();
