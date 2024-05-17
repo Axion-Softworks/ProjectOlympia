@@ -1,14 +1,17 @@
 <div class="confirm-dialog">
     <h2 class="white-text" mat-dialog-title>Draft Athlete?</h2>
     <mat-dialog-content>
+        <div class="header white-text">Name/Nationality</div>
         <div class="country-name">
             <p class="white-text pr-12">{{athlete.forename}} {{athlete.surname}}</p>
             <div matTooltip="{{athlete.country}}" class="country">
                 <span class="fi fi-{{athlete.iso}}"></span>
                 <p class="white-text pl-6">{{athlete.countryCode}}</p>
             </div>
-        </div>
+        </div>  
+        <div class="header white-text">Main Discipline</div>
         <p class="white-text">{{athlete.discipline}}</p>
+        <div class="header white-text">Further Information</div>
         <p class="white-text">{{athlete.description}}</p>
     </mat-dialog-content>
     <mat-dialog-actions class="button-group">
