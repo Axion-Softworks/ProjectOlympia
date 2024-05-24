@@ -34,7 +34,7 @@ namespace ProjectOlympia
                 if (string.IsNullOrWhiteSpace(message))
                     return;
 
-                await this.SendMessageToSockets(message);
+                await this.SendMessageToSockets(message, id);
             }
         }
 
@@ -54,13 +54,13 @@ namespace ProjectOlympia
             return string.Empty;
         }
 
-        private async Task SendMessageToSockets(string message)
+        private async Task SendMessageToSockets(string message, Guid id)
         {
             List<WebSocketConnection> toSendTo;
 
-            lock (webSocketConnections)
+            lock (this.webSocketConnections)
             {
-                toSendTo = webSocketConnections.ToList();
+                toSendTo = this.webSocketConnections.Where(x => x.Id != id).ToList();
             }
 
             var tasks = toSendTo.Select(async webSocketConnection =>
@@ -85,21 +85,26 @@ namespace ProjectOlympia
             {
                 while (true)
                 {
-                    List<WebSocketConnection> openSockets, closedSockets;
+                    var openSockets = new List<WebSocketConnection>();
 
                     lock (this.webSocketConnections)
                     {
-                        openSockets = webSocketConnections.Where(x => x.WebSocket.State == WebSocketState.Open || x.WebSocket.State == WebSocketState.Connecting).ToList();
-                        closedSockets = webSocketConnections.Where(x => x.WebSocket.State != WebSocketState.Open && x.WebSocket.State != WebSocketState.Connecting).ToList();
+                        foreach (WebSocketConnection connection in this.webSocketConnections)
+                        {
+                            if (connection == null || connection.WebSocket == null)
+                                continue;
+
+                            if (connection.WebSocket.State == WebSocketState.Open || connection.WebSocket.State == WebSocketState.Connecting)
+                            {
+                                openSockets.Add(connection);
+                            }
+                            else
+                            {
+                                this.logger.LogInformation("Web Socket: '{id}' closed", connection.Id);
+                            }
+                        }
 
                         this.webSocketConnections = openSockets;
-                    }
-
-                    foreach (var closedSocket in closedSockets)
-                    {
-                        // send message to other connections??
-
-                        this.logger.LogInformation("Closing Web Socket Connection: {id}", closedSocket.Id);
                     }
 
                     await Task.Delay(5000);

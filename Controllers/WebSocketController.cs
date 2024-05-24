@@ -23,7 +23,7 @@ namespace ProjectOlympia.Controllers
         }
 
         [Route("/ws")]
-        public async Task Test()
+        public async Task Connect()
         {
             if (this.HttpContext.WebSockets.IsWebSocketRequest == false)
             {

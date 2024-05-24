@@ -30,11 +30,11 @@ export class WebSocketService {
             this.log("Web Socket open", ev);
         };
 
-        this.webSocket.onclose = (ev: Event) => {
+        this.webSocket.onclose = (ev: CloseEvent) => {
             this.log("Web Socket close", ev);
         };
 
-        this.webSocket.onmessage = (ev: Event) => {
+        this.webSocket.onmessage = (ev: MessageEvent) => {
             this.log("Web Socket message", ev);
         };
     }
