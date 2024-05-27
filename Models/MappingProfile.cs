@@ -11,6 +11,11 @@ namespace ProjectOlympia
 
             CreateMap<AddPlayerRequest, Player>();
             CreateMap<UpdatePlayerRequest, Player>();
+            CreateMap<AddDraftRequest, Draft>();
+            CreateMap<UpdateDraftRequest, Draft>();
+            CreateMap<Draft, AddDraftResponse>();
+            CreateMap<Draft, DraftData>();
+            CreateMap<Player, PlayerData>();
         }
     }
 }

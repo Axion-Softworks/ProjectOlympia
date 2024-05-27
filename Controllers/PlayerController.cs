@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectOlympia.Controllers;
 
@@ -21,18 +22,41 @@ public class PlayerController : ControllerBase
     [HttpGet]
     public IActionResult GetAllPlayers()
     {
-        return Ok(_context.Players.ToList());
+        var players = _context.Players.Include(i => i.Drafts).ToList();
+
+        var response = new List<GetPlayerResponse>();
+
+        foreach (var player in players)
+        {
+            var playerResponse = new GetPlayerResponse(player);
+
+            foreach (var draft in player.Drafts)
+            {
+                playerResponse.Drafts.Add(_mapper.Map<DraftData>(draft));
+            }
+
+            response.Add(playerResponse);   
+        }
+    
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetPlayer(Guid id)
     {
-        var player = _context.Players.FirstOrDefault(x => x.Id == id);
+        var player = _context.Players.Include(i => i.Drafts).FirstOrDefault(x => x.Id == id);
 
         if (player == null)
             return NotFound();
 
-        return Ok(player);
+        var response = new GetPlayerResponse(player);
+
+        foreach (var draft in player.Drafts)
+        {
+            response.Drafts.Add(_mapper.Map<DraftData>(draft));
+        }
+
+        return Ok(response);
     }
 
     [HttpPost]
