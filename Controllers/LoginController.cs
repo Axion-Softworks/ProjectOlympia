@@ -8,23 +8,22 @@ public class LoginController : ControllerBase
 {
 
     private readonly ILogger<LoginController> _logger;
+    private readonly DraftingContext _context;
 
-    private User Kyle = new User("Kyle") { Id = Guid.NewGuid() };
-
-    public LoginController(ILogger<LoginController> logger)
+    public LoginController(ILogger<LoginController> logger, DraftingContext draftingContext)
     {
         _logger = logger;
+        _context = draftingContext;
     }
 
     [HttpPost]
-    public User? Login([FromBody] LoginRequest request)
+    public IActionResult Login([FromBody] LoginRequest request)
     {
-        if (request.Username.ToLower() != "kyle" || request.Password != "meh")
-        {
-            this.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return null;
-        }
+        var player = _context.Players.FirstOrDefault(f => f.Username == request.Username);
 
-        return Kyle;
+        if (player == null || request.Password != player.Password)
+            return Unauthorized();
+
+        return Ok(new LoginResponse(player));
     }
 }

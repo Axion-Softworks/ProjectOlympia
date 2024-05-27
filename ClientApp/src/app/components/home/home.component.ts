@@ -39,7 +39,7 @@ export class HomeComponent {
 
     this.http.post<any>(this.baseUrl + 'api/login', this.formgroup.value).subscribe(result => {
       console.log(result);
-      sessionStorage.setItem('user', JSON.stringify(result));
+      sessionStorage.setItem('player', JSON.stringify(result));
     }, error => console.error(error));
   }
 }

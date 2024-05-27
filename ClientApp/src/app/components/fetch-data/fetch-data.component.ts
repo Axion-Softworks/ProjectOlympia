@@ -116,7 +116,7 @@ export class FetchDataComponent {
   }
 
   getCurrentPlayerIndex(): number {
-    var user = JSON.parse(sessionStorage.getItem('user') as string);
+    var user = JSON.parse(sessionStorage.getItem('player') as string);
 
     //var index = this.players.findIndex(f => f.id == user.id);
     var index = this.players.findIndex(f => f.name == user.name);
