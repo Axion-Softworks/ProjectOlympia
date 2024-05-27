@@ -8,6 +8,9 @@ namespace ProjectOlympia
         {
             CreateMap<AthleteData, Athlete>()
                 .ForCtorParam("medals", o => o.MapFrom(k => new List<Medal>()));
+
+            CreateMap<AddPlayerRequest, Player>();
+            CreateMap<UpdatePlayerRequest, Player>();
         }
     }
 }

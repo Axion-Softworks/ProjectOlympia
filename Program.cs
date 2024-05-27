@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 // Auto Mapper Configurations
 var mappingConfig = new AutoMapper.MapperConfiguration(mc =>
@@ -41,10 +41,7 @@ var webSocketOptions = new WebSocketOptions
 
 app.UseWebSockets(webSocketOptions);
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}"
-);
+app.MapControllers();
 
 app.MapFallbackToFile("index.html");
 
