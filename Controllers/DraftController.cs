@@ -88,6 +88,29 @@ public class DraftController : ControllerBase
         return Ok(draft);
     }
 
+    [HttpPut("assign")]
+    public async Task<IActionResult> AssignPlayersToDraftAsync([FromBody] AssignPlayersToDraftRequest request)
+    {
+        var draft = _context.Drafts.Include(i => i.Players).FirstOrDefault(f => f.Id == request.Id);
+
+        if (draft == null)
+            return NotFound();
+
+        foreach (var playerId in request.PlayerIds)
+        {
+            var player = _context.Players.FirstOrDefault(f => f.Id == playerId);
+
+            if (player == null)
+                return NotFound();
+
+            draft.Players.Add(player);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDraftAsync([FromRoute] Guid id)
     {
