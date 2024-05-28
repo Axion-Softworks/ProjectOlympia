@@ -22,7 +22,7 @@ public class DraftController : ControllerBase
     [HttpGet]
     public IActionResult GetAllDrafts()
     {
-        var drafts = _context.Drafts.Include(i => i.Players).ToList();
+        var drafts = _context.Drafts.Include(i => i.Users).ToList();
 
         var response = new List<GetDraftResponse>();
 
@@ -30,9 +30,9 @@ public class DraftController : ControllerBase
         {
             var draftResponse = new GetDraftResponse(draft);
 
-            foreach (var player in draft.Players)
+            foreach (var user in draft.Users)
             {
-                draftResponse.Players.Add(_mapper.Map<PlayerData>(player));
+                draftResponse.Users.Add(_mapper.Map<UserData>(user));
             }
 
             response.Add(draftResponse);   
@@ -44,16 +44,16 @@ public class DraftController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetDraft(Guid id)
     {
-        var draft = _context.Drafts.Include(i => i.Players).Include(i => i.Athletes).FirstOrDefault(x => x.Id == id);
+        var draft = _context.Drafts.Include(i => i.Users).Include(i => i.Athletes).FirstOrDefault(x => x.Id == id);
 
         if (draft == null)
             return NotFound();
 
         var response = new GetDraftResponse(draft);
 
-        foreach (var player in draft.Players)
+        foreach (var user in draft.Users)
         {
-            response.Players.Add(_mapper.Map<PlayerData>(player));
+            response.Users.Add(_mapper.Map<UserData>(user));
         }
 
         foreach (var athlete in draft.Athletes)
@@ -69,7 +69,7 @@ public class DraftController : ControllerBase
     {
         var draft = this._mapper.Map<Draft>(request);
         draft.Id = Guid.NewGuid();
-        draft.Players = _context.Players.Where(w => request.PlayerIds.Contains(w.Id)).ToList();        
+        draft.Users = _context.Users.Where(w => request.UserIds.Contains(w.Id)).ToList();        
 
         _context.Add(draft);
         await _context.SaveChangesAsync();
@@ -89,21 +89,21 @@ public class DraftController : ControllerBase
     }
 
     [HttpPut("assign")]
-    public async Task<IActionResult> AssignPlayersToDraftAsync([FromBody] AssignPlayersToDraftRequest request)
+    public async Task<IActionResult> AssignUsersToDraftAsync([FromBody] AssignUsersToDraftRequest request)
     {
-        var draft = _context.Drafts.Include(i => i.Players).FirstOrDefault(f => f.Id == request.Id);
+        var draft = _context.Drafts.Include(i => i.Users).FirstOrDefault(f => f.Id == request.Id);
 
         if (draft == null)
             return NotFound();
 
-        foreach (var playerId in request.PlayerIds)
+        foreach (var userId in request.UserIds)
         {
-            var player = _context.Players.FirstOrDefault(f => f.Id == playerId);
+            var user = _context.Users.FirstOrDefault(f => f.Id == userId);
 
-            if (player == null)
+            if (user == null)
                 return NotFound();
 
-            draft.Players.Add(player);
+            draft.Users.Add(user);
         }
 
         await _context.SaveChangesAsync();

@@ -19,11 +19,11 @@ public class LoginController : ControllerBase
     [HttpPost]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        var player = _context.Players.FirstOrDefault(f => f.Username == request.Username);
+        var user = _context.Users.FirstOrDefault(f => f.Username == request.Username);
 
-        if (player == null || request.Password != player.Password)
+        if (user == null || request.Password != user.Password)
             return Unauthorized();
 
-        return Ok(new LoginResponse(player));
+        return Ok(new LoginResponse(user));
     }
 }

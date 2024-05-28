@@ -10,5 +10,5 @@ public class UpdateAthleteRequest
     public required string Country { get; set; }
     public required string CountryCode { get; set; }
     public required string Iso { get; set; }
-    public Guid? PlayerId { get; set; }
+    public Guid? UserId { get; set; }
 }

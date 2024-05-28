@@ -6,10 +6,10 @@ public class LoginResponse
     public string Username { get; set; }
     public List<Draft> Drafts{ get; set; } = new List<Draft>();
 
-    public LoginResponse(Player player)
+    public LoginResponse(User user)
     {
-        Id = player.Id;
-        Username = player.Username;
-        Drafts = player.Drafts;
+        Id = user.Id;
+        Username = user.Username;
+        Drafts = user.Drafts;
     }
 }

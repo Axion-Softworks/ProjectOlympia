@@ -1,14 +1,14 @@
 namespace ProjectOlympia;
 
-public class GetPlayerResponse
+public class GetUserResponse
 {
     public Guid Id { get; set;}
     public string Username { get; set; }
     public List<DraftData> Drafts{ get; set; } = new List<DraftData>();
 
-    public GetPlayerResponse(Player player)
+    public GetUserResponse(User user)
     {
-        Id = player.Id;
-        Username = player.Username;
+        Id = user.Id;
+        Username = user.Username;
     }
 }

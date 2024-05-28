@@ -12,12 +12,12 @@
       </mat-button-toggle-group>
     </div>
 
-    <div class="players-section">
+    <div class="users-section">
       <div class="pb-12">Players</div>
 
       <mat-accordion>
-        @for(player of players; track player) {
-          <player-panel [player]="player" class="pb-12"></player-panel>
+        @for(user of users; track user) {
+          <user-panel [user]="user" class="pb-12"></user-panel>
         }
       </mat-accordion>
     </div>

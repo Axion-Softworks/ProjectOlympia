@@ -75,22 +75,22 @@ public class AthleteController : ControllerBase
     }
 
     [HttpPut("assign")]
-    public async Task<IActionResult> AssignAthleteToPlayerAsync([FromBody] AssignAthleteRequest request)
+    public async Task<IActionResult> AssignAthleteToUserAsync([FromBody] AssignAthleteRequest request)
     {
         var athlete = _context.Athletes.FirstOrDefault(f => f.Id == request.Id);
-        var player = _context.Players.FirstOrDefault(f => f.Id == request.PlayerId);
+        var user = _context.Users.FirstOrDefault(f => f.Id == request.UserId);
 
-        if (athlete == null || player == null)
+        if (athlete == null || user == null)
             return NotFound();
 
-        athlete.Player = player;
-        athlete.PlayerId = player.Id;
+        athlete.User = user;
+        athlete.UserId = user.Id;
 
         _context.Update(athlete);
         await _context.SaveChangesAsync();
 
         var response = new AssignAthleteResponse(athlete);
-        response.Player = _mapper.Map<PlayerData>(player);
+        response.User = _mapper.Map<UserData>(user);
 
         return Ok(response);
     }

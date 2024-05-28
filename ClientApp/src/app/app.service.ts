@@ -11,15 +11,15 @@ export class AppService {
   ) { }
 
   public loggedIn(): boolean { 
-    let player;
+    let user;
     try { 
-      player = JSON.parse(sessionStorage.getItem('player') as string); 
-      if (!player.id)
+      user = JSON.parse(sessionStorage.getItem('user') as string); 
+      if (!user.id)
         return false;
-      if (!player.username)
+      if (!user.username)
         return false;
     }
     catch { return false; }
-    return player != null; 
+    return user != null; 
   }
 }

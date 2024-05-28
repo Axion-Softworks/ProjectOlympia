@@ -11,8 +11,8 @@ public class AssignAthleteResponse
     public string CountryCode { get; set; }
     public string Iso { get; set; }
     public List<MedalData> Medals { get; set; } = new List<MedalData>();
-    public PlayerData? Player { get; set; }
-    public Guid? PlayerId { get; set; }
+    public UserData? User { get; set; }
+    public Guid? UserId { get; set; }
 
     public AssignAthleteResponse(Athlete athlete)
     {
@@ -24,6 +24,6 @@ public class AssignAthleteResponse
         Iso = athlete.Iso;
         Description = athlete.Description;
         Discipline = athlete.Discipline;
-        PlayerId = athlete.PlayerId;
+        UserId = athlete.UserId;
     }
 }

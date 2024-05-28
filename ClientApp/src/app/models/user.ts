@@ -1,6 +1,6 @@
 import { Athlete } from "./athlete";
 
-export class Player {
+export class User {
     id: string;
     name: string;
     athletes: Athlete[];

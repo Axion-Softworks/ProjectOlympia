@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Player } from 'src/app/models/player';
+import { User } from 'src/app/models/user';
 
 @Component({
-    selector: 'player-panel',
+    selector: 'user-panel',
     standalone: true,
     imports: [
         CommonModule,
@@ -13,12 +13,12 @@ import { Player } from 'src/app/models/player';
         MatExpansionModule,
         MatTooltipModule
     ],
-    templateUrl: './player-panel.component.html',
-    styleUrl: './player-panel.component.css',
+    templateUrl: './user-panel.component.html',
+    styleUrl: './user-panel.component.css',
     changeDetection: ChangeDetectionStrategy.Default,
 })
-export class PlayerPanelComponent { 
-    @Input() player!: Player;
+export class UserPanelComponent { 
+    @Input() user!: User;
 
     constructor() {        
     }

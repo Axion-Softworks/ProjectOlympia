@@ -1,7 +1,7 @@
 namespace ProjectOlympia;
 
-public class AddDraftRequest
+public class AssignUsersToDraftRequest
 {
-    public required string Name { get; set; }
+    public required Guid Id { get; set; }
     public required List<Guid> UserIds { get; set; }
 }

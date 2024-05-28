@@ -7,9 +7,9 @@ import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { Player } from 'src/app/models/player';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { PlayerPanelComponent } from '../player-panel/player-panel.component';
+import { User } from 'src/app/models/user';
+import { MatExpansionModule } from '@angular/material/expansion'; 
+import { UserPanelComponent } from '../user-panel/user-panel.component';
 import * as _ from 'lodash'; 
 
 @Component({
@@ -26,7 +26,7 @@ import * as _ from 'lodash';
     MatExpansionModule,
 
     AthleteCardComponent,
-    PlayerPanelComponent
+    UserPanelComponent
   ]
 })
 export class FetchDataComponent {
@@ -42,7 +42,7 @@ export class FetchDataComponent {
 
   public athletes: Athlete[] = [];
   public ePlace = EPlace;
-  public players: Player[] = [{id: '0', name: 'Kyle', athletes: []}, {id: '1', name: 'Emily', athletes: []}];
+  public users: User[] = [{id: '0', name: 'Kyle', athletes: []}, {id: '1', name: 'Emily', athletes: []}];
 
   public rowHeight = "1:1";
 
@@ -115,26 +115,26 @@ export class FetchDataComponent {
 
   }
 
-  getCurrentPlayerIndex(): number {
-    var user = JSON.parse(sessionStorage.getItem('player') as string);
+  getCurrentUserIndex(): number {
+    var user = JSON.parse(sessionStorage.getItem('user') as string);
 
     //var index = this.players.findIndex(f => f.id == user.id);
-    var index = this.players.findIndex(f => f.name == user.name);
+    var index = this.users.findIndex(f => f.name == user.name);
 
     return index;
   }
 
   onDraftPickEmitted(athlete: Athlete): void {
-    var player = this.players[this.getCurrentPlayerIndex()];
+    var user = this.users[this.getCurrentUserIndex()];
 
-    player.athletes.push(athlete);
+    user.athletes.push(athlete);
 
-    this.players[this.getCurrentPlayerIndex()] = player;
+    this.users[this.getCurrentUserIndex()] = user;
   }
 
   athleteIsDrafted(athlete: Athlete): boolean {
     // var drafted = this.players.find(f => f.athletes.find(g => g.id == athlete.id)) == undefined ? false : true;
-    var drafted = this.players.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
+    var drafted = this.users.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
 
     return drafted;
   }

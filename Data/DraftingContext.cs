@@ -3,7 +3,7 @@ using ProjectOlympia;
 
 public class DraftingContext : DbContext
 {
-    public DbSet<Player> Players { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Draft> Drafts { get; set; }
     public DbSet<Athlete> Athletes { get; set; }
     public DbSet<Medal> Medals { get; set; }
@@ -16,9 +16,9 @@ public class DraftingContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Athlete>()
-            .HasOne(p => p.Player)
+            .HasOne(p => p.User)
             .WithMany()
-            .HasForeignKey(p => p.PlayerId)
+            .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
     }

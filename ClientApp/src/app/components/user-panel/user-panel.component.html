@@ -1,14 +1,14 @@
-<mat-expansion-panel class="player-panel" hideToggle>
+<mat-expansion-panel class="user-panel" hideToggle>
     <mat-expansion-panel-header>
-      <mat-panel-title class="player-panel">
-        {{player.name}}
+      <mat-panel-title class="user-panel">
+        {{user.name}}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    @if(player.athletes.length < 1) {
+    @if(user.athletes.length < 1) {
       <p>No athletes drafted</p>
     }
     @else {
-      @for (athlete of player.athletes; track athlete) {
+      @for (athlete of user.athletes; track athlete) {
         <div class="athlete-details-container">
           <div class="country-name">
             <div matTooltip="{{athlete.country}}" class="country">

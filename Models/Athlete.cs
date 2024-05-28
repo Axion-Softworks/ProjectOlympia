@@ -11,8 +11,8 @@ public class Athlete
     public required string CountryCode { get; set; }
     public required string Iso { get; set; }
     public required List<Medal> Medals { get; set; }
-    public Player? Player { get; set; }
-    public Guid? PlayerId { get; set; }
+    public User? User { get; set; }
+    public Guid? UserId { get; set; }
     public required Draft Draft { get; set; }
 
     public Athlete() {}
