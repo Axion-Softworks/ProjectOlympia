@@ -1,6 +1,6 @@
 namespace ProjectOlympia;
 
-public class AthleteData
+public class AthleteCsvData
 {
     public string Surname { get; set; }
     public string Forename { get; set; }
@@ -10,7 +10,7 @@ public class AthleteData
     public string CountryCode { get; set; }
     public string ISO { get; set; }
 
-    public AthleteData(string Forename, string Surname, string Description, string Discipline, string Country, string CountryCode, string ISO)
+    public AthleteCsvData(string Forename, string Surname, string Description, string Discipline, string Country, string CountryCode, string ISO)
     {
         this.Forename = Forename;
         this.Surname = Surname;

@@ -20,6 +20,6 @@ public class DraftingContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.PlayerId)
             .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+            .IsRequired(false);
     }
 }

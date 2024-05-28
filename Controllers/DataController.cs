@@ -13,17 +13,22 @@ public class DataController : ControllerBase
 
     private readonly ILogger<DataController> _logger;
     private readonly IMapper _mapper;
-
-    public DataController(ILogger<DataController> logger, IMapper mapper)
+    private readonly DraftingContext _context;
+    public DataController(ILogger<DataController> logger, IMapper mapper, DraftingContext draftingContext)
     {
         _logger = logger;
         _mapper = mapper;
+        _context = draftingContext;
     }
 
     [HttpPost]
-    public IActionResult ParseData([FromBody] DataRequest request)
+    public async Task<IActionResult> ParseData([FromBody] DataRequest request)
     {
-        var records = new List<AthleteData>();
+        var records = new List<AthleteCsvData>();
+        var draft = _context.Drafts.FirstOrDefault(x => x.Id == request.DraftId);
+
+        if (draft == null)
+            return NotFound();
 
         try 
         {
@@ -34,7 +39,7 @@ public class DataController : ControllerBase
             using (var reader = new StreamReader($@"Data\Files\{request.Filename}"))
             using (var csv = new CsvReader(reader, config))
             {
-                records = csv.GetRecords<AthleteData>().ToList();
+                records = csv.GetRecords<AthleteCsvData>().ToList();
             }
         }
         catch (Exception ex) 
@@ -42,8 +47,16 @@ public class DataController : ControllerBase
             return StatusCode(500, ex);
         }
 
-        var result = this._mapper.Map<List<Athlete>>(records);
+        var athletes = this._mapper.Map<List<Athlete>>(records);
 
-        return Ok(result);
+        for (int i = 0; i < athletes.Count; i++)
+        {
+            athletes[i].Draft = draft;
+        }
+
+        _context.AddRange(athletes);
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 }

@@ -44,7 +44,7 @@ public class DraftController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetDraft(Guid id)
     {
-        var draft = _context.Drafts.Include(i => i.Players).FirstOrDefault(x => x.Id == id);
+        var draft = _context.Drafts.Include(i => i.Players).Include(i => i.Athletes).FirstOrDefault(x => x.Id == id);
 
         if (draft == null)
             return NotFound();
@@ -54,6 +54,11 @@ public class DraftController : ControllerBase
         foreach (var player in draft.Players)
         {
             response.Players.Add(_mapper.Map<PlayerData>(player));
+        }
+
+        foreach (var athlete in draft.Athletes)
+        {
+            response.Athletes.Add(_mapper.Map<AthleteData>(athlete));
         }
 
         return Ok(response);

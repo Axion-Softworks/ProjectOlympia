@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectOlympia.Controllers;
 
@@ -6,26 +8,104 @@ namespace ProjectOlympia.Controllers;
 [Route("api/[controller]")]
 public class AthleteController : ControllerBase
 {
-    private List<Athlete> Athletes = new List<Athlete>();
-
     private readonly ILogger<AthleteController> _logger;
+    private readonly IMapper _mapper;
+    private readonly DraftingContext _context;
 
-    public AthleteController(ILogger<AthleteController> logger)
+    public AthleteController(ILogger<AthleteController> logger, IMapper mapper, DraftingContext draftingContext)
     {
         _logger = logger;
-
-        Athletes = new List<Athlete>() { 
-            // new Athlete("Dave Davis", "Sucks at running", "Running", "us", new List<Medal>(){ new Medal("Running", EPlace.Bronze) } ),
-            // new Athlete("Davina DeDevine", "Good at running", "Running", "de", new List<Medal>(){ new Medal("Running", EPlace.Gold) } ),
-            // new Athlete("Roger D Roper", "Throws like a beast", "Athletics", "de", new List<Medal>(){ new Medal("Shot Put", EPlace.Gold), new Medal("Caber Toss", EPlace.Gold), new Medal("Discus", EPlace.Silver) } ),
-            // new Athlete("Patrice El Tato", "Loses steam in the last furlong", "Horsemanship", "ie", new List<Medal>()),
-            // new Athlete("Toddward Oddward", "Quite odd", "Fishing, Cards", "ca", new List<Medal>(){ new Medal("Fishing", EPlace.Gold), new Medal("Eating Fish", EPlace.Silver), new Medal("Balatro", EPlace.Bronze) } ),
-        };
+        _mapper = mapper;
+        _context = draftingContext;
     }
 
     [HttpGet]
-    public IEnumerable<Athlete> Get()
+    public IActionResult GetAllAthletes()
     {
-        return Athletes;
+        var athletes = _context.Athletes.Include(i => i.Draft).Include(i => i.Medals).ToList();
+
+        var response = new List<GetAthleteResponse>();
+
+        foreach (var athlete in athletes)
+        {
+            var athleteResponse = new GetAthleteResponse(athlete);
+
+            athleteResponse.Draft = _mapper.Map<DraftData>(athlete.Draft);
+
+            foreach (var medal in athlete.Medals)
+            {
+                athleteResponse.Medals.Add(_mapper.Map<MedalData>(medal));
+            }
+            
+            response.Add(athleteResponse);   
+        }
+
+        return Ok(response);
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetAthlete(Guid id)
+    {
+        var athlete = _context.Athletes.Include(i => i.Draft).Include(i => i.Medals).FirstOrDefault(x => x.Id == id);
+
+        if (athlete == null)
+            return NotFound();
+
+        var response = new GetAthleteResponse(athlete);
+
+        response.Draft = _mapper.Map<DraftData>(athlete.Draft);
+
+        foreach (var medal in athlete.Medals)
+        {
+            response.Medals.Add(_mapper.Map<MedalData>(medal));
+        }  
+
+        return Ok(response);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateAthleteAsync([FromBody] UpdateAthleteRequest request)
+    {
+        var athlete = this._mapper.Map<Athlete>(request);
+
+        _context.Update(athlete);
+        await _context.SaveChangesAsync();
+
+        return Ok(athlete);
+    }
+
+    [HttpPut("assign")]
+    public async Task<IActionResult> AssignAthleteToPlayerAsync([FromBody] AssignAthleteRequest request)
+    {
+        var athlete = _context.Athletes.FirstOrDefault(f => f.Id == request.Id);
+        var player = _context.Players.FirstOrDefault(f => f.Id == request.PlayerId);
+
+        if (athlete == null || player == null)
+            return NotFound();
+
+        athlete.Player = player;
+        athlete.PlayerId = player.Id;
+
+        _context.Update(athlete);
+        await _context.SaveChangesAsync();
+
+        var response = new AssignAthleteResponse(athlete);
+        response.Player = _mapper.Map<PlayerData>(player);
+
+        return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAthleteAsync([FromRoute] Guid id)
+    {
+        var athlete = this._context.Athletes.FirstOrDefault(x => x.Id == id);
+
+        if (athlete == null)
+            return NotFound();
+
+        _context.Remove(athlete);
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 }
