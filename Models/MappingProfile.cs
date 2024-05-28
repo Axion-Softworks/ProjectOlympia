@@ -14,9 +14,8 @@ namespace ProjectOlympia
             CreateMap<AddDraftRequest, Draft>();
             CreateMap<UpdateDraftRequest, Draft>();
             CreateMap<UpdateAthleteRequest, Athlete>();
-
-            CreateMap<Draft, AddDraftResponse>();
-            CreateMap<Athlete, AssignAthleteResponse>();
+            CreateMap<AddMedalRequest, Medal>();
+            CreateMap<UpdateMedalRequest, Medal>();
 
             CreateMap<Draft, DraftData>();
             CreateMap<Player, PlayerData>();
