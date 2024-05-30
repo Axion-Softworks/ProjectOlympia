@@ -6,4 +6,5 @@ export interface User {
     username: string;
     athletes: Athlete[];
     drafts: DraftSummary[];
+    isAdmin: boolean;
 }

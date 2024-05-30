@@ -1,9 +1,16 @@
 <h1 id="tableLabel">Athlete Draft</h1>
 
-<p *ngIf="!draft"><em>Loading...</em></p>
+<mat-spinner *ngIf="!draft" class="loading-spinner"></mat-spinner>
 
-<div class="grid-container">
+<div class="grid-container" *ngIf="!!draft">
   <div class="grid-item">
+
+    @if (userIsAdmin() && !draftStarted) {
+      <div>
+        <button class="white-text button-affirmative" mat-raised-button (click)="startDraft()">Start Draft</button>
+      </div>
+    }
+
     <div class="sort-buttons">
       <mat-button-toggle-group name="athleteSort" aria-label="Sort Athletes" (change)="sortAthletes($event.value)" value="country" vertical="true">
         <mat-button-toggle class="sort-button" value="country">Country</mat-button-toggle>

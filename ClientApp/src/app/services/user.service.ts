@@ -48,4 +48,20 @@ export class UserService {
     catch { return []; }
   }
 
+  public isAdmin(): boolean {
+    let admin;
+    try { 
+      let user = JSON.parse(sessionStorage.getItem('user') as string);
+
+      if (!user.id)
+        return false;
+      if (!user.username)
+        return false;
+
+      admin = user.isAdmin;
+    }
+    catch { return false; }
+    return admin; 
+  }
+
 }

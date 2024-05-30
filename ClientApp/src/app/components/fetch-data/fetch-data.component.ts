@@ -11,6 +11,9 @@ import { UserPanelComponent } from '../user-panel/user-panel.component';
 import { ActivatedRoute } from '@angular/router';
 import { DraftService } from 'src/app/services/draft-service';
 import { Draft } from 'src/app/models/draft';
+import { MatButtonModule } from '@angular/material/button';
+import { UserService } from 'src/app/services/user.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-fetch-data',
@@ -24,6 +27,8 @@ import { Draft } from 'src/app/models/draft';
     MatGridListModule,
     MatButtonToggleModule,
     MatExpansionModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
 
     AthleteCardComponent,
     UserPanelComponent
@@ -41,10 +46,11 @@ export class FetchDataComponent {
   // }
 
   public draft?: Draft;
+  public draftStarted: boolean = false;
 
   public rowHeight = "1:1";
 
-  constructor(private route: ActivatedRoute, private draftService: DraftService) {
+  constructor(private route: ActivatedRoute, private draftService: DraftService, private userService: UserService) {
     var draftId = this.route.snapshot.paramMap.get('id');
     if (!!draftId) {
       this.draftService.getDraft(draftId)
@@ -147,5 +153,13 @@ export class FetchDataComponent {
     var drafted = this.draft?.users.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
 
     return drafted;
+  }
+
+  userIsAdmin(): boolean {
+    return this.userService.isAdmin();
+  }
+
+  startDraft(): void {
+    this.draftStarted = true;
   }
 }
