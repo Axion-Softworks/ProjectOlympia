@@ -23,7 +23,7 @@
       <div class="pb-12">Players</div>
 
       <mat-accordion>
-        @for(user of draft?.users; track user) {
+        @for(user of draft.users; track user) {
           <user-panel [user]="user" class="pb-12"></user-panel>
         }
       </mat-accordion>

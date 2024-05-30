@@ -25,7 +25,7 @@ export class NavMenuComponent {
   }
 
   logOut() {
-    sessionStorage.clear();
+    this.userService.logOut();
     this.router.navigate(['/']);
   }
 }

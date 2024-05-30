@@ -20,6 +20,11 @@ export class UserService {
     });
   }
 
+  public logOut(): void {
+    sessionStorage.clear();
+    this.user = undefined;
+  }
+
   public loggedIn(): boolean { 
     let user;
     if (!this.user) {

@@ -133,7 +133,7 @@ export class DraftComponent {
     this.draftService.draftAthlete(user.id, athlete.id)
       .then(() => {
         user.athletes.push(athlete);
-        athlete.userId = athlete.userId;
+        athlete.userId = user.id;
       });
   }
 

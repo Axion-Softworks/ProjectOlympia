@@ -95,6 +95,26 @@ public class AthleteController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPut("clear/{draftId}")]
+    public async Task<IActionResult> ClearDraftedAthletesByDraftIdAsync([FromRoute] Guid draftId)
+    {
+        var athletes = _context.Athletes.Include(i => i.Draft).Include(i => i.User).Where(w => w.Draft.Id == draftId);
+
+        if (athletes == null || athletes.Count() < 1)
+            return NotFound();
+
+        foreach (var athlete in athletes)
+        {
+            athlete.User = null;
+            athlete.UserId = null;        
+            _context.Update(athlete);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAthleteAsync([FromRoute] Guid id)
     {
