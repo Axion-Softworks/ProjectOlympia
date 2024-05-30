@@ -22,4 +22,10 @@ public class DraftingContext : DbContext
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
     }
+
+    //For benchmarking
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+    // }
 }
