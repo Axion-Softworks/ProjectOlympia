@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppService } from 'src/app/app.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -9,10 +9,10 @@ import { AppService } from 'src/app/app.service';
 })
 export class NavMenuComponent {
   public get loggedIn(): boolean { 
-    return this.appService.loggedIn();
+    return this.userService.loggedIn();
   }
   
-  constructor(private appService: AppService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   isExpanded = false;
 

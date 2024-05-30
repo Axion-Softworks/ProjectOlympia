@@ -1,0 +1,21 @@
+<h2>Open Drafts</h2>
+
+@for (draft of drafts; track $index) {
+    <mat-card class="draft-card pt-12 pb-12">
+        <div class="draft-data pl-12">
+            <div class="draft-headers">Draft</div>
+            <div class="draft-values">{{draft.name}}</div> 
+        </div>
+        <div class="draft-data">
+            <div class="draft-headers">Athletes</div>
+            <div class="draft-values">{{draft.athleteCount}}</div>
+        </div>
+        <div class="draft-data">
+            <div class="draft-headers">Players</div>
+            <div class="draft-values">{{draft.userCount}}</div>
+        </div>
+        <div class="draft-data pr-12">
+            <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">Open Draft</button>
+        </div>
+    </mat-card>
+}

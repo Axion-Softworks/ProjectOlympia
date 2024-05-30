@@ -18,6 +18,7 @@ namespace ProjectOlympia
             CreateMap<UpdateMedalRequest, Medal>();
 
             CreateMap<Draft, DraftData>();
+            CreateMap<Draft, DraftSummaryData>();
             CreateMap<User, UserData>();
             CreateMap<Medal, MedalData>();
             CreateMap<Athlete, AthleteData>();

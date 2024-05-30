@@ -1,6 +1,6 @@
 <h1 id="tableLabel">Athlete Draft</h1>
 
-<p *ngIf="!athletes?.length"><em>Loading...</em></p>
+<p *ngIf="!draft"><em>Loading...</em></p>
 
 <div class="grid-container">
   <div class="grid-item">
@@ -16,7 +16,7 @@
       <div class="pb-12">Players</div>
 
       <mat-accordion>
-        @for(user of users; track user) {
+        @for(user of draft?.users; track user) {
           <user-panel [user]="user" class="pb-12"></user-panel>
         }
       </mat-accordion>
@@ -26,7 +26,7 @@
 
   <div class="grid-item">
     <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
-      <mat-grid-tile *ngFor="let athlete of athletes" class="card-container">
+      <mat-grid-tile *ngFor="let athlete of draft?.athletes" class="card-container">
         <athlete-card [athlete]="athlete" [disabled]="athleteIsDrafted(athlete)" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
       </mat-grid-tile>
     </mat-grid-list>

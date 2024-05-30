@@ -20,6 +20,5 @@ import { User } from 'src/app/models/user';
 export class UserPanelComponent { 
     @Input() user!: User;
 
-    constructor() {        
-    }
+    constructor() {}
 }

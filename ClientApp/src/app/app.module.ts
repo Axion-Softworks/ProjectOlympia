@@ -24,7 +24,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'fetch-data/:id', component: FetchDataComponent },
     ])
   ],
   providers: [

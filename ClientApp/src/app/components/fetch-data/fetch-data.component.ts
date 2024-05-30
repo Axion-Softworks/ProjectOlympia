@@ -1,5 +1,4 @@
-import { Component, HostListener, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete';
 import { EPlace } from '../../models/e-place';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -7,10 +6,11 @@ import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { User } from 'src/app/models/user';
 import { MatExpansionModule } from '@angular/material/expansion'; 
 import { UserPanelComponent } from '../user-panel/user-panel.component';
-import * as _ from 'lodash'; 
+import { ActivatedRoute } from '@angular/router';
+import { DraftService } from 'src/app/services/draft-service';
+import { Draft } from 'src/app/models/draft';
 
 @Component({
   selector: 'app-fetch-data',
@@ -40,18 +40,23 @@ export class FetchDataComponent {
   //   }
   // }
 
-  public athletes: Athlete[] = [];
-  public ePlace = EPlace;
-  public users: User[] = [{id: '0', name: 'Kyle', athletes: []}, {id: '1', name: 'Emily', athletes: []}];
+  public draft?: Draft;
 
   public rowHeight = "1:1";
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.post<Athlete[]>(baseUrl + 'api/data', {"filename": "ExampleData(Complete).csv"}).subscribe(result => {
-      this.athletes = result;
-
-    }, error => console.error(error));
-
+  constructor(private route: ActivatedRoute, private draftService: DraftService) {
+    var draftId = this.route.snapshot.paramMap.get('id');
+    if (!!draftId) {
+      this.draftService.getDraft(draftId)
+        .then((result: Draft) => {
+          //console.log(this.draft)
+          this.draft = result;
+          this.draft?.users.forEach(user => {
+            user.athletes = this.draft ? this.draft?.athletes.filter(f => f.userId == user.id) : [];
+          });
+        });
+      
+    }
   }
 
   getMedals(athlete: Athlete, place: EPlace) : number {
@@ -71,7 +76,7 @@ export class FetchDataComponent {
   sortAthletes(sort: string): void {  
     switch (sort) {
       case "country":
-          this.athletes.sort((a, b) => {
+          this.draft?.athletes.sort((a, b) => {
             if ( a.country < b.country ){
             return -1;
             }
@@ -84,7 +89,7 @@ export class FetchDataComponent {
         break;
     
       case "discipline":
-        this.athletes.sort((a, b) => {
+        this.draft?.athletes.sort((a, b) => {
           if ( a.discipline < b.discipline ){
           return -1;
           }
@@ -97,7 +102,7 @@ export class FetchDataComponent {
         break;
 
       case "name":
-        this.athletes.sort((a, b) => {
+        this.draft?.athletes.sort((a, b) => {
           if ( a.surname < b.surname ){
           return -1;
           }
@@ -116,25 +121,30 @@ export class FetchDataComponent {
   }
 
   getCurrentUserIndex(): number {
+    if (!this.draft)
+      return -1;
+
     var user = JSON.parse(sessionStorage.getItem('user') as string);
 
     //var index = this.players.findIndex(f => f.id == user.id);
-    var index = this.users.findIndex(f => f.name == user.name);
+    var index = this.draft.users.findIndex(f => f.username == user.username);
 
     return index;
   }
 
   onDraftPickEmitted(athlete: Athlete): void {
-    var user = this.users[this.getCurrentUserIndex()];
+    if (!this.draft?.users)
+        return;
+
+    var user = this.draft.users[this.getCurrentUserIndex()];
 
     user.athletes.push(athlete);
 
-    this.users[this.getCurrentUserIndex()] = user;
+    this.draft.users[this.getCurrentUserIndex()] = user;
   }
 
   athleteIsDrafted(athlete: Athlete): boolean {
-    // var drafted = this.players.find(f => f.athletes.find(g => g.id == athlete.id)) == undefined ? false : true;
-    var drafted = this.users.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
+    var drafted = this.draft?.users.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
 
     return drafted;
   }

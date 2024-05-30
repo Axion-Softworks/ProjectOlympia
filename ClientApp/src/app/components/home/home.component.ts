@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AppService } from 'src/app/app.service';
+import { UserService } from 'src/app/services/user.service';
+import { DraftSelectionComponent } from '../draft-selection/draft-selection.component';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-home',
@@ -18,28 +19,33 @@ import { AppService } from 'src/app/app.service';
 
     MatInputModule,
     MatButtonModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+
+    DraftSelectionComponent
   ]
 })
 export class HomeComponent {
   public get loggedIn(): boolean { 
-    return this.appService.loggedIn();
+    return this.userService.loggedIn();
+  }
+
+  public get user(): User | undefined {
+    return this.userService.user;
   }
 
   formgroup: FormGroup;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private appService: AppService) {
+  constructor(private userService: UserService) {
     this.formgroup = new FormGroup(
       {username: new FormControl(), password: new FormControl()}
     );
   }
 
   login(): void {
-    console.log("Login!", this.formgroup.value)
+    this.userService.login(this.formgroup);
+  }
 
-    this.http.post<any>(this.baseUrl + 'api/login', this.formgroup.value).subscribe(result => {
-      console.log(result);
-      sessionStorage.setItem('user', JSON.stringify(result));
-    }, error => console.error(error));
+  getUsername(): string {
+    return !!this.userService.user ? this.userService.user.username : "";
   }
 }
