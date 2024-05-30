@@ -129,12 +129,12 @@ export class DraftComponent {
     var userIndex = this.getCurrentUserIndex();
 
     var user = this.draft.users[userIndex];
-
-    user.athletes.push(athlete);
-
-    this.draft.users[userIndex] = user;
-
-    this.draft.athletes.indexOf(athlete)
+    
+    this.draftService.draftAthlete(user.id, athlete.id)
+      .then(() => {
+        user.athletes.push(athlete);
+        athlete.userId = athlete.userId;
+      });
   }
 
   athleteIsDrafted(athlete: Athlete): boolean {
