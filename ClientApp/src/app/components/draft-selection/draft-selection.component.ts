@@ -34,6 +34,6 @@ export class DraftSelectionComponent {
 
     openDraft(id: string): void {
         console.log(this.drafts.find(f=>f.id == id));
-        this.router.navigate(['/fetch-data', id])
+        this.router.navigate(['/draft', id])
     }
 }

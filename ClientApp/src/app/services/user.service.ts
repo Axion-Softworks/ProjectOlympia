@@ -22,46 +22,90 @@ export class UserService {
 
   public loggedIn(): boolean { 
     let user;
-    try { 
-      user = JSON.parse(sessionStorage.getItem('user') as string);
+    if (!this.user) {
+      try { 
+        user = JSON.parse(sessionStorage.getItem('user') as string);
 
-      if (!user.id)
-        return false;
-      if (!user.username)
-        return false;
+        if (!user.id)
+          return false;
+        if (!user.username)
+          return false;
 
-      this.user = user;
-    }
-    catch { return false; }
+        this.user = user;
+      }
+      catch { return false; }
+    } else
+      user = this.user;
+    
     return user != null; 
   }
 
   public getUserDrafts(): DraftSummary[] {
     let user;
 
-    try { 
-      user = JSON.parse(sessionStorage.getItem('user') as string); 
-      if (!user.drafts)
-        return [];
-      return user.drafts;
-    }
-    catch { return []; }
+    if (!this.user) {
+      try { 
+        user = JSON.parse(sessionStorage.getItem('user') as string); 
+        if (!user.drafts)
+          return [];
+        return user.drafts;
+      }
+      catch { return []; }
+    } else 
+      return this.user.drafts;
   }
 
   public isAdmin(): boolean {
     let admin;
-    try { 
-      let user = JSON.parse(sessionStorage.getItem('user') as string);
 
-      if (!user.id)
-        return false;
-      if (!user.username)
-        return false;
+    if (!this.user) {
+      try { 
+        let user = JSON.parse(sessionStorage.getItem('user') as string);
 
-      admin = user.isAdmin;
-    }
-    catch { return false; }
+        if (!user.id)
+          return false;
+        if (!user.username)
+          return false;
+
+        admin = user.isAdmin;
+      }
+      catch { return false; }
+    } else 
+      admin = this.user.isAdmin;
+    
     return admin; 
+  }
+
+  public getUsername(): string {
+    let name;
+
+    if (!this.user) {
+      try { 
+        let user = JSON.parse(sessionStorage.getItem('user') as string);
+
+        name = user.username;
+      }
+      catch { return ""; }
+    } else 
+      name = this.user.username;
+    
+    return name; 
+  }
+
+  public getId(): string {
+    let id;
+
+    if (!this.user) {
+      try { 
+        let user = JSON.parse(sessionStorage.getItem('user') as string);
+
+        id = user.id;
+      }
+      catch { return ""; }
+    } else 
+      id = this.user.id;
+    
+    return id; 
   }
 
 }

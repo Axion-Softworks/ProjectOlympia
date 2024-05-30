@@ -1,6 +1,5 @@
 import { Component, } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete';
-import { EPlace } from '../../models/e-place';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
 import { CommonModule } from '@angular/common';
@@ -16,9 +15,9 @@ import { UserService } from 'src/app/services/user.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-fetch-data',
-  templateUrl: './fetch-data.component.html',
-  styleUrl: './fetch-data.component.css',
+  selector: 'draft',
+  templateUrl: './draft.component.html',
+  styleUrl: './draft.component.css',
   standalone: true,
   imports: [
     CommonModule,
@@ -34,7 +33,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     UserPanelComponent
   ]
 })
-export class FetchDataComponent {
+export class DraftComponent {
   // @HostListener('window:resize', ['$event.target.innerWidth'])
   // onResize(width: number) {
   //   if (width >= 1200) {
@@ -52,6 +51,7 @@ export class FetchDataComponent {
 
   constructor(private route: ActivatedRoute, private draftService: DraftService, private userService: UserService) {
     var draftId = this.route.snapshot.paramMap.get('id');
+
     if (!!draftId) {
       this.draftService.getDraft(draftId)
         .then((result: Draft) => {
@@ -61,22 +61,7 @@ export class FetchDataComponent {
             user.athletes = this.draft ? this.draft?.athletes.filter(f => f.userId == user.id) : [];
           });
         });
-      
     }
-  }
-
-  getMedals(athlete: Athlete, place: EPlace) : number {
-    return athlete.medals.filter(medal => medal.place == place).length;
-  }
-
-  getMedalOverlay(athlete: Athlete, place: EPlace): string {
-    //not yet used in html, no super fast tooltip options without a UI framework :P
-    var medals = athlete.medals.filter(medal => medal.place == place);
-
-    if (medals.length < 1)
-      return "";
-
-    return medals.map(medal => medal.event).join(", ");
   }
 
   sortAthletes(sort: string): void {  
@@ -130,10 +115,9 @@ export class FetchDataComponent {
     if (!this.draft)
       return -1;
 
-    var user = JSON.parse(sessionStorage.getItem('user') as string);
+    var id = this.userService.getId();
 
-    //var index = this.players.findIndex(f => f.id == user.id);
-    var index = this.draft.users.findIndex(f => f.username == user.username);
+    var index = this.draft.users.findIndex(f => f.id == id);
 
     return index;
   }
@@ -142,15 +126,19 @@ export class FetchDataComponent {
     if (!this.draft?.users)
         return;
 
-    var user = this.draft.users[this.getCurrentUserIndex()];
+    var userIndex = this.getCurrentUserIndex();
+
+    var user = this.draft.users[userIndex];
 
     user.athletes.push(athlete);
 
-    this.draft.users[this.getCurrentUserIndex()] = user;
+    this.draft.users[userIndex] = user;
+
+    this.draft.athletes.indexOf(athlete)
   }
 
   athleteIsDrafted(athlete: Athlete): boolean {
-    var drafted = this.draft?.users.find(f => f.athletes.find(g => g.surname == athlete.surname && g.forename == athlete.forename)) == undefined ? false : true;
+    var drafted = !!athlete.userId;
 
     return drafted;
   }
