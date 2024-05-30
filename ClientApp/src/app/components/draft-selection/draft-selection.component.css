@@ -22,9 +22,13 @@
 }
 
 .draft-headers {
-  font-size: small;
+  font-size: medium;
 }
 
-.draft-data {
-  font-size: xx-large;
+.draft-values {
+  font-size: x-large;
+}
+
+.button-cell {
+  text-align: right;
 }

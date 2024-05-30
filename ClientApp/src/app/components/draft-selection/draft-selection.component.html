@@ -1,21 +1,25 @@
 <h2>Open Drafts</h2>
 
-@for (draft of drafts; track $index) {
-    <mat-card class="draft-card pt-12 pb-12">
-        <div class="draft-data pl-12">
-            <div class="draft-headers">Draft</div>
-            <div class="draft-values">{{draft.name}}</div> 
-        </div>
-        <div class="draft-data">
-            <div class="draft-headers">Athletes</div>
-            <div class="draft-values">{{draft.athleteCount}}</div>
-        </div>
-        <div class="draft-data">
-            <div class="draft-headers">Players</div>
-            <div class="draft-values">{{draft.userCount}}</div>
-        </div>
-        <div class="draft-data pr-12">
+<table mat-table [dataSource]="drafts">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="draft-headers">Draft</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.name}}</td>
+    </ng-container>
+    <ng-container matColumnDef="athletes">
+        <th mat-header-cell *matHeaderCellDef class="draft-headers">Athletes</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.athleteCount}}</td>
+    </ng-container>
+    <ng-container matColumnDef="users">
+        <th mat-header-cell *matHeaderCellDef class="draft-headers">Players</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.userCount}}</td>
+    </ng-container>
+    <ng-container matColumnDef="button">
+        <th mat-header-cell *matHeaderCellDef class="draft-headers"></th>
+        <td mat-cell *matCellDef="let draft" class="button-cell">            
             <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">Open Draft</button>
-        </div>
-    </mat-card>
-}
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
