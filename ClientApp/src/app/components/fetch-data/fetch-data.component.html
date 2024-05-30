@@ -34,7 +34,7 @@
   <div class="grid-item">
     <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
       <mat-grid-tile *ngFor="let athlete of draft?.athletes" class="card-container">
-        <athlete-card [athlete]="athlete" [disabled]="athleteIsDrafted(athlete)" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
+        <athlete-card [athlete]="athlete" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftStarted" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
       </mat-grid-tile>
     </mat-grid-list>
   </div>

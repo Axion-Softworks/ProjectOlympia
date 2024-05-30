@@ -27,6 +27,7 @@ import { AthleteConfirmDialogComponent } from './athlete-confirm-dialog/athlete-
 export class AthleteCardComponent { 
     @Input() athlete!: Athlete;
     @Input() disabled: boolean = false;
+    @Input() draftStarted: boolean = false;
     @Output() emitDraft: EventEmitter<Athlete> = new EventEmitter<Athlete>();
 
     constructor(public dialog: MatDialog) {
@@ -38,7 +39,7 @@ export class AthleteCardComponent {
             return;
 
         const dialogRef = this.dialog.open(AthleteConfirmDialogComponent, {
-            data: { athlete: this.athlete },
+            data: { athlete: this.athlete, buttonsEnabled: this.draftStarted },
             maxWidth: '500px',
             minWidth: '400px'
         });

@@ -25,11 +25,13 @@ import { Athlete } from 'src/app/models/athlete';
 export class AthleteConfirmDialogComponent { 
 
     public athlete: Athlete;
+    public buttonsEnabled: boolean = false;
 
     constructor(public dialogRef: MatDialogRef<AthleteConfirmDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
         
         this.athlete = data.athlete;
+        this.buttonsEnabled = data.buttonsEnabled;
     }
 
     onNoClick() {
