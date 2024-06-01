@@ -7,6 +7,5 @@ import { WebSocketService } from './services/web-socket.service';
 export class AppService {
 
   constructor(
-    private _webSocketService: WebSocketService
   ) { }
 }

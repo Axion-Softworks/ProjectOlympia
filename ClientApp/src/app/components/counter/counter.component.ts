@@ -12,7 +12,7 @@ export class CounterComponent {
   }
 
   constructor(private webSocket: WebSocketService) {
-    this.webSocket.send("TEST");
+      this.webSocket.send("TEST");
   }
 
   public incrementCounter() {
