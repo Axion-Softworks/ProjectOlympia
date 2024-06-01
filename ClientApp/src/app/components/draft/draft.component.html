@@ -1,4 +1,4 @@
-<h1 id="tableLabel">Athlete Draft</h1>
+<h1 *ngIf="!!draft">{{ draft.name }}</h1>
 
 <mat-spinner *ngIf="!draft" class="loading-spinner"></mat-spinner>
 
@@ -27,7 +27,6 @@
         }
       </mat-accordion>
     </div>
-    
   </div>
 
   <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">

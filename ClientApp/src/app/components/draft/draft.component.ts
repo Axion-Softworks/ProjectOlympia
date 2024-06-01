@@ -67,9 +67,12 @@ export class DraftComponent {
   }
 
   sortAthletes(sort: string): void {  
+    if (!this.draft)
+      return;
+
     switch (sort) {
       case "country":
-          this.draft?.athletes.sort((a, b) => {
+          this.draft.athletes.sort((a, b) => {
             if ( a.country < b.country ){
             return -1;
             }
@@ -82,7 +85,7 @@ export class DraftComponent {
         break;
     
       case "discipline":
-        this.draft?.athletes.sort((a, b) => {
+        this.draft.athletes.sort((a, b) => {
           if ( a.discipline < b.discipline ){
           return -1;
           }
@@ -95,7 +98,7 @@ export class DraftComponent {
         break;
 
       case "name":
-        this.draft?.athletes.sort((a, b) => {
+        this.draft.athletes.sort((a, b) => {
           if ( a.surname < b.surname ){
           return -1;
           }
@@ -110,7 +113,7 @@ export class DraftComponent {
       default:
         break;
     }
-
+    this.draft.athletes = [...this.draft.athletes];
   }
 
   getCurrentUserIndex(): number {
