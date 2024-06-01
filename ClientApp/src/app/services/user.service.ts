@@ -3,6 +3,7 @@ import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { DraftSummary } from '../models/draft-summary';
+import { WebSocketService } from './web-socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,19 @@ export class UserService {
 
   public user?: User;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+  constructor(
+    private http: HttpClient,
+    private webSocketService: WebSocketService,
+    @Inject('BASE_URL') private baseUrl: string
+  ) { }
 
   public login(formgroup: FormGroup): void {
     this.http.post<User>(this.baseUrl + 'api/login', formgroup.value).subscribe({
-      next: (result) => { this.user = result; sessionStorage.setItem('user', JSON.stringify(result)); },
+      next: (result) => {
+        this.user = result; sessionStorage.setItem('user', JSON.stringify(result));
+
+        this.webSocketService.authenticate(this.user.id);
+      },
       error: (e) => console.error(e)
     });
   }

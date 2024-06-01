@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component, OnDestroy, } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserService } from 'src/app/services/user.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { WebSocketService } from 'src/app/services/web-socket.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'draft',
@@ -35,7 +37,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     UserPanelComponent
   ]
 })
-export class DraftComponent {
+export class DraftComponent implements OnDestroy {
   // @HostListener('window:resize', ['$event.target.innerWidth'])
   // onResize(width: number) {
   //   if (width >= 1200) {
@@ -46,12 +48,19 @@ export class DraftComponent {
   //   }
   // }
 
+  private _unsubscribeAll: Subject<any> = new Subject();
+
   public draft?: Draft;
   public draftStarted: boolean = false;
 
   public rowHeight = "1:1";
 
-  constructor(private route: ActivatedRoute, private draftService: DraftService, private userService: UserService) {
+  constructor(
+    private route: ActivatedRoute,
+    private draftService: DraftService,
+    private userService: UserService,
+    private webSocketService: WebSocketService
+  ) {
     var draftId = this.route.snapshot.paramMap.get('id');
 
     if (!!draftId) {
@@ -64,6 +73,25 @@ export class DraftComponent {
           });
         });
     }
+
+    this.webSocketService.onAthleteDrafted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response) => {
+        var user = this.draft?.users.find(x => x.id === response.userId);
+        var athlete = this.draft?.athletes.find(x => x.id === response.athleteId);
+
+        if (!athlete)
+          return;
+
+        user?.athletes.push(athlete);
+
+        athlete.userId = response.userId;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
   }
 
   sortAthletes(sort: string): void {  

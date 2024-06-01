@@ -1,6 +1,9 @@
 import { Inject, Injectable } from "@angular/core";
-
-// Move this into the app service for simplicity??
+import { WebSocketMessage } from "../models/web-socket/web-socket-message";
+import { EWebSocketOperation } from "../models/web-socket/e-web-socket-operation";
+import { WebSocketResponse } from "../models/web-socket/web-socket-response";
+import { AthleteDraftedResponse } from "../models/web-socket/althete-drafted-response";
+import { Subject } from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -12,10 +15,12 @@ export class WebSocketService {
         if (!this.webSocket)
             return false;
 
-        const result: boolean = this.webSocket.readyState === this.webSocket.OPEN;
+        const result: boolean = this.webSocket.readyState === WebSocket.OPEN;
 
         return result;
     }
+
+    public readonly onAthleteDrafted: Subject<AthleteDraftedResponse> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string
@@ -34,9 +39,16 @@ export class WebSocketService {
             this.log("Web Socket close", ev);
         };
 
-        this.webSocket.onmessage = (ev: MessageEvent) => {
-            this.log("Web Socket message", ev);
+        this.webSocket.onmessage = (ev: MessageEvent) => { this.onMessage(ev); }
+    }
+
+    public authenticate(userId: string): void {
+        const message: WebSocketMessage = {
+            userId: userId,
+            operation: EWebSocketOperation.Auth
         };
+
+        this.send(message);
     }
 
     public send(value: any): void {
@@ -53,6 +65,24 @@ export class WebSocketService {
         }
 
         this.webSocket.send(json);
+    }
+
+    private onMessage(event: MessageEvent) {
+        this.log("Web Socket message", event);
+
+        const response: WebSocketResponse = JSON.parse(event.data);
+
+        switch (response.operation) {
+            case EWebSocketOperation.AthleteDrafted:
+                const athleteResponse: AthleteDraftedResponse = JSON.parse(response.content);
+
+                this.onAthleteDrafted.next(athleteResponse);
+
+                break;
+        
+            default:
+                break;
+        }
     }
 
     private log(message: string, value: any = null) {

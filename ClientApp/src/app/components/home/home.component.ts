@@ -43,6 +43,7 @@ export class HomeComponent {
 
   login(): void {
     this.userService.login(this.formgroup);
+    this.formgroup.reset(); // TODO: bit broken needs fixing
   }
 
   getUsername(): string {

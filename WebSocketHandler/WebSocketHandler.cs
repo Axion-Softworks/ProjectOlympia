@@ -1,6 +1,9 @@
 using System.Net.WebSockets;
 using System.Text;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 namespace ProjectOlympia
 {
     public class WebSocketHandler : IWebSocketHandler
@@ -12,6 +15,12 @@ namespace ProjectOlympia
         public WebSocketHandler(ILogger<WebSocketHandler> logger)
         {
             this.logger = logger;
+
+            // Move to program/startup ???
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
 
             this.SetupCleanUpTask();
         }
@@ -25,17 +34,72 @@ namespace ProjectOlympia
                 this.webSocketConnections.Add(webSocketConnection);
             }
 
-            // send message to sockets - "x is choosing athletes"??
-
             while (webSocket.State == WebSocketState.Open)
             {
-                string message = await this.ReceiveMessage(id, webSocket);
+                string json = await this.ReceiveMessage(id, webSocket);
 
-                if (string.IsNullOrWhiteSpace(message))
+                if (string.IsNullOrWhiteSpace(json))
                     return;
 
-                await this.SendMessageToSockets(message, id);
+                var message = JsonConvert.DeserializeObject<WebSocketRequest>(json);
+
+                if (message == null)
+                    return;
+
+                this.logger.LogInformation("Received message with operation: {op}", message.Operation);
+
+                switch (message.Operation)
+                {
+                    case EWebSocketOperation.Auth:
+                        this.OnAuthenticate(id, message.UserId);
+
+                        break;
+
+                    default:
+                        break;
+                }
             }
+        }
+
+        public async Task SendAthleteAssignedMessageAsync(Guid userId, Guid athleteId, List<Guid> draftUserIds)
+        {
+            List<WebSocketConnection> toSendTo;
+
+            lock (this.webSocketConnections)
+            {
+                toSendTo = this.webSocketConnections.Where(x => draftUserIds.Contains(x.UserId)).ToList();
+            }
+
+            var response = new AthleteDraftedResponse
+            {
+                AthleteId = athleteId,
+                UserId = userId
+            };
+
+            string responseJson = JsonConvert.SerializeObject(response);
+
+            var message = new WebSocketResponse
+            {
+                Operation = EWebSocketOperation.AthleteDrafted,
+                Content = responseJson
+            };
+
+            string messageJson = JsonConvert.SerializeObject(message);
+
+            var tasks = toSendTo.Select(async connection =>
+            {
+               byte[] bytes = Encoding.Default.GetBytes(messageJson);
+               var arraySegment = new ArraySegment<byte>(bytes);
+
+                await connection.WebSocket.SendAsync(
+                    arraySegment,
+                    WebSocketMessageType.Text,
+                    true,
+                    CancellationToken.None
+                );
+            });
+
+            await Task.WhenAll(tasks);
         }
 
         private async Task<string> ReceiveMessage(Guid id, WebSocket webSocket)
@@ -48,7 +112,11 @@ namespace ProjectOlympia
                 string message = Encoding.Default.GetString(arraySegment).TrimEnd('\0');
 
                 if (string.IsNullOrWhiteSpace(message) == false)
-                    return $"Player with ID '{id}' said: '{message}'";
+                {
+                    this.logger.LogInformation("Player with ID '{id}' said: '{message}'", id, message);
+
+                    return message;
+                }
             }
 
             return string.Empty;
@@ -110,6 +178,21 @@ namespace ProjectOlympia
                     await Task.Delay(5000);
                 }
             });
+        }
+
+        private void OnAuthenticate(Guid webSocketId, Guid userId)
+        {
+            this.logger.LogInformation("Authenticating Web Socket Connection: '{wsid}' with User: '{userId}'", webSocketId, userId);
+
+            lock (this.webSocketConnections)
+            {
+                WebSocketConnection? connection = this.webSocketConnections.FirstOrDefault(x => x.Id == webSocketId);
+
+                if (connection == null)
+                    return;
+
+                connection.UserId = userId;
+            }
         }
     }
 }

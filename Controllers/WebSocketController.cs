@@ -8,6 +8,8 @@ namespace ProjectOlympia.Controllers
     // Maintaining Web Socket connections - Do the following
         // https://peterdaugaardrasmussen.com/2020/03/14/asp-net-websockets-sending-messages-back-and-forth-between-client-and-server-with-example/
 
+    // Websocket connections are closed on refresh - need to resend the user ID when this happens
+
     public class WebSocketController : ControllerBase
     {
         private readonly ILogger<WebSocketController> logger;
@@ -34,6 +36,7 @@ namespace ProjectOlympia.Controllers
 
             using WebSocket webSocket = await this.HttpContext.WebSockets.AcceptWebSocketAsync();
             
+            // Using new guid maybe dumb? Just use connection ID from kestrel off the the HTTP Context
             await this.webSocketHandler.Handle(Guid.NewGuid(), webSocket);
         }
     }

@@ -11,12 +11,14 @@ public class AthleteController : ControllerBase
     private readonly ILogger<AthleteController> _logger;
     private readonly IMapper _mapper;
     private readonly DraftingContext _context;
+    private readonly IWebSocketHandler _webSocketHandler;
 
-    public AthleteController(ILogger<AthleteController> logger, IMapper mapper, DraftingContext draftingContext)
+    public AthleteController(ILogger<AthleteController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketHandler webSocketHandler)
     {
         _logger = logger;
         _mapper = mapper;
         _context = draftingContext;
+        _webSocketHandler = webSocketHandler;
     }
 
     [HttpGet]
@@ -77,7 +79,11 @@ public class AthleteController : ControllerBase
     [HttpPut("assign")]
     public async Task<IActionResult> AssignAthleteToUserAsync([FromBody] AssignAthleteRequest request)
     {
-        var athlete = _context.Athletes.FirstOrDefault(f => f.Id == request.Id);
+        var athlete = _context.Athletes
+            .Include(x => x.Draft)
+            .ThenInclude(x => x.Users)
+            .FirstOrDefault(f => f.Id == request.Id);
+
         var user = _context.Users.FirstOrDefault(f => f.Id == request.UserId);
 
         if (athlete == null || user == null)
@@ -88,6 +94,10 @@ public class AthleteController : ControllerBase
 
         _context.Update(athlete);
         await _context.SaveChangesAsync();
+
+        var userIds = athlete.Draft.Users.Where(x => x.Id != request.UserId).Select(x => x.Id).ToList();
+
+        await _webSocketHandler.SendAthleteAssignedMessageAsync(request.UserId, request.Id, userIds);
 
         var response = new AssignAthleteResponse(athlete);
         response.User = _mapper.Map<UserData>(user);
