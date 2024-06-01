@@ -6,19 +6,8 @@
   color: rgb(209, 205, 199) !important;
 }
 
-.draft-card {
+.grey-background {
   background-color:  #373d43 !important; 
-  color: rgb(209, 205, 199) !important;
-  min-height: 50px;
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.draft-data {
-  display: flex;
-  flex-direction: column;
 }
 
 .draft-headers {

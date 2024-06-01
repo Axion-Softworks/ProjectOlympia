@@ -1,20 +1,20 @@
 <h2>Open Drafts</h2>
 
-<table mat-table [dataSource]="drafts">
+<table mat-table [dataSource]="drafts" class="grey-background">
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers">Draft</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.name}}</td>
+        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.name}}</td>
     </ng-container>
     <ng-container matColumnDef="athletes">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers">Athletes</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.athleteCount}}</td>
+        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Athletes</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.athleteCount}}</td>
     </ng-container>
     <ng-container matColumnDef="users">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers">Players</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values">{{draft.userCount}}</td>
+        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Players</th>
+        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.userCount}}</td>
     </ng-container>
     <ng-container matColumnDef="button">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers"></th>
+        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text"></th>
         <td mat-cell *matCellDef="let draft" class="button-cell">            
             <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">Open Draft</button>
         </td>
