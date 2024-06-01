@@ -13,6 +13,7 @@ import { Draft } from 'src/app/models/draft';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from 'src/app/services/user.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'draft',
@@ -28,6 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatExpansionModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    ScrollingModule,
 
     AthleteCardComponent,
     UserPanelComponent

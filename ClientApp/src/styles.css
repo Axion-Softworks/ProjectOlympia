@@ -50,3 +50,10 @@ body {
 .button-affirmative {
   background-color: darkgreen !important;
 }
+
+cdk-virtual-scroll-viewport {
+  scrollbar-width: none; /* Hide scrollbar on Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar on IE and Edge */
+  overflow: -webkit-hidden-scrollbar; /* Hide scrollbar on Chrome, Safari, 
+  and newer versions of Edge */
+}

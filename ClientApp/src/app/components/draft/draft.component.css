@@ -2,10 +2,6 @@ th, tr {
   color: rgb(209, 205, 199) !important;
 }
 
-.card-parent {
-  height: 800px;
-}
-
 .sort-buttons {
   display: flex;
   flex-direction: row;
@@ -40,4 +36,8 @@ th, tr {
   transform: translateX(-50%) translateY(-50%);
   -moz-transform: translateX(-50%) translateY(-50%);
   -webkit-transform: translateX(-50%) translateY(-50%);
+}
+
+.virtual-scroll {
+  height: 87vh;
 }

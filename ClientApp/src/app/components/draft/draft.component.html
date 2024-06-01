@@ -3,8 +3,7 @@
 <mat-spinner *ngIf="!draft" class="loading-spinner"></mat-spinner>
 
 <div class="grid-container" *ngIf="!!draft">
-  <div class="grid-item">
-
+  <div class="sidebar">
     @if (userIsAdmin() && !draftStarted) {
       <div>
         <button class="white-text button-affirmative" mat-raised-button (click)="startDraft()">Start Draft</button>
@@ -31,11 +30,11 @@
     
   </div>
 
-  <div class="grid-item">
+  <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
     <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
-      <mat-grid-tile *ngFor="let athlete of draft?.athletes" class="card-container">
+      <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
         <athlete-card [athlete]="athlete" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftStarted" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
       </mat-grid-tile>
     </mat-grid-list>
-  </div>
+  </cdk-virtual-scroll-viewport>
 </div>
