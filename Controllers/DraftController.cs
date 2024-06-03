@@ -41,6 +41,29 @@ public class DraftController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("summary/{userId}")]
+    public IActionResult GetAllDraftSummariesByUserId([FromRoute] Guid userId)
+    {
+        var drafts = _context.Drafts.Include(i => i.Users).Include(i => i.Athletes).Where(w => w.Users.Any(a => a.Id == userId)).ToList();
+
+        var response = new List<DraftSummaryData>();
+
+        foreach (var draft in drafts)
+        {
+            var draftSummaryData = new DraftSummaryData() {
+                Id = draft.Id,
+                Name = draft.Name,
+                UserCount = draft.Users.Count(),
+                AthleteCount = draft.Athletes.Count(),
+                Status = draft.Status
+            };
+
+            response.Add(draftSummaryData);   
+        }
+
+        return Ok(response);
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetDraft(Guid id)
     {
@@ -109,6 +132,22 @@ public class DraftController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok();
+    }
+
+    [HttpPut("status/{id}/{status}")]
+    public async Task<IActionResult> SetDraftStatusAsync([FromRoute] Guid id, [FromRoute] EDraftStatus status)
+    {
+        var draft = this._context.Drafts.FirstOrDefault(f => f.Id == id);
+
+        if (draft == null)
+            return NotFound();
+
+        draft.Status = status;
+
+        _context.Update(draft);
+        await _context.SaveChangesAsync();
+
+        return Ok(draft);
     }
 
     [HttpDelete("{id}")]

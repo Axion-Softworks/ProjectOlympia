@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { DraftSummary } from '../models/draft-summary';
 import { WebSocketService } from './web-socket.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private webSocketService: WebSocketService,
+    private router: Router,
     @Inject('BASE_URL') private baseUrl: string
   ) { }
 
@@ -24,6 +26,7 @@ export class UserService {
         this.user = result; sessionStorage.setItem('user', JSON.stringify(result));
 
         this.webSocketService.authenticate(this.user.id);
+        this.router.navigate(["home"]);
       },
       error: (e) => console.error(e)
     });

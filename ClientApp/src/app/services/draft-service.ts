@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Draft } from '../models/draft';
 import { Athlete } from '../models/athlete';
 import { DraftAthleteRequest } from '../models/requests/draft-athlete-request';
+import { DraftSummary } from '../models/draft-summary';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class DraftService {
     return new Promise((resolve) => {
       this.http.get<Draft>(this.baseUrl + 'api/draft/' + id)
       .subscribe({
-        next: (result) => { console.log(result); resolve(result) }, 
+        next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
       });
     })
@@ -27,7 +28,17 @@ export class DraftService {
     return new Promise((resolve) => {
       this.http.put<Athlete>(this.baseUrl + 'api/athlete/assign', request)
       .subscribe({
-        next: (result) => { console.log(result); resolve(result) }, 
+        next: (result) => { resolve(result) }, 
+        error: (e) => console.error(e)
+      });
+    })
+  }
+
+  public getDraftSummariesByUserId(userId: string): Promise<DraftSummary[]> {
+    return new Promise((resolve) => {
+      this.http.get<DraftSummary[]>(this.baseUrl + 'api/draft/summary/' + userId)
+      .subscribe({
+        next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
       });
     })

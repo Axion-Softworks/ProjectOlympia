@@ -6,9 +6,8 @@ public class Draft
     public required string Name { get; set; }
     public required List<User> Users { get; set; }
     public required List<Athlete> Athletes { get; set; }
+    public required EDraftStatus Status { get; set; }
 
     public Draft()
-    {
-        
-    }
+    {}
 }
