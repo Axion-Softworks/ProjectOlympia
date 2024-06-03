@@ -17,6 +17,7 @@ AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddSingleton<IWebSocketHandler, WebSocketHandler>();
+builder.Services.AddScoped<IWebSocketService, WebSocketService>();
 
 builder.Services.AddDbContext<DraftingContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectOlympiaConnectionString")));

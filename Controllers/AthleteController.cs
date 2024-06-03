@@ -11,14 +11,14 @@ public class AthleteController : ControllerBase
     private readonly ILogger<AthleteController> _logger;
     private readonly IMapper _mapper;
     private readonly DraftingContext _context;
-    private readonly IWebSocketHandler _webSocketHandler;
+    private readonly IWebSocketService _webSocketService;
 
-    public AthleteController(ILogger<AthleteController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketHandler webSocketHandler)
+    public AthleteController(ILogger<AthleteController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketService webSocketService)
     {
         _logger = logger;
         _mapper = mapper;
         _context = draftingContext;
-        _webSocketHandler = webSocketHandler;
+        _webSocketService = webSocketService;
     }
 
     [HttpGet]
@@ -97,7 +97,7 @@ public class AthleteController : ControllerBase
 
         var userIds = athlete.Draft.Users.Where(x => x.Id != request.UserId).Select(x => x.Id).ToList();
 
-        await _webSocketHandler.SendAthleteAssignedMessageAsync(request.UserId, request.Id, userIds);
+        await _webSocketService.SendAthleteAssignedMessageAsync(request.UserId, request.Id, userIds);
 
         var response = new AssignAthleteResponse(athlete);
         response.User = _mapper.Map<UserData>(user);

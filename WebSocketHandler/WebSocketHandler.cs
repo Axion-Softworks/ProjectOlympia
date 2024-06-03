@@ -60,31 +60,15 @@ namespace ProjectOlympia
                 }
             }
         }
-
-        public async Task SendAthleteAssignedMessageAsync(Guid userId, Guid athleteId, List<Guid> draftUserIds)
+        
+        public async Task SendMessageToUsersAsync(string messageJson, List<Guid> recipientUserIds)
         {
             List<WebSocketConnection> toSendTo;
 
             lock (this.webSocketConnections)
             {
-                toSendTo = this.webSocketConnections.Where(x => draftUserIds.Contains(x.UserId)).ToList();
+                toSendTo = this.webSocketConnections.Where(x => recipientUserIds.Contains(x.UserId)).ToList();
             }
-
-            var response = new AthleteDraftedResponse
-            {
-                AthleteId = athleteId,
-                UserId = userId
-            };
-
-            string responseJson = JsonConvert.SerializeObject(response);
-
-            var message = new WebSocketResponse
-            {
-                Operation = EWebSocketOperation.AthleteDrafted,
-                Content = responseJson
-            };
-
-            string messageJson = JsonConvert.SerializeObject(message);
 
             var tasks = toSendTo.Select(async connection =>
             {
