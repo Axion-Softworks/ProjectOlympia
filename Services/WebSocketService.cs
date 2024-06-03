@@ -31,5 +31,26 @@ namespace ProjectOlympia
 
             await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
         }
+
+        public async Task SendDraftStartedMessageAsync(Guid draftId, List<Guid> draftUserIds)
+        {
+            var response = new DraftOpenedResponse
+            {
+                DraftId = draftId,
+                Status = EDraftStatus.InProgress
+            };
+
+            string responseJson = JsonConvert.SerializeObject(response);
+
+            var message = new WebSocketResponse
+            {
+                Operation = EWebSocketOperation.DraftOpened,
+                Content = responseJson
+            };
+
+            string messageJson = JsonConvert.SerializeObject(message);
+
+            await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
+        }
     }
 }

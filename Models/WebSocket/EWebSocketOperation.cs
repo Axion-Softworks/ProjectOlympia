@@ -3,6 +3,7 @@ namespace ProjectOlympia
     public enum EWebSocketOperation
     {
         Auth,
-        AthleteDrafted
+        AthleteDrafted,
+        DraftOpened
     }
 }

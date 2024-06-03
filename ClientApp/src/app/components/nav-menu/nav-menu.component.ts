@@ -28,4 +28,11 @@ export class NavMenuComponent {
     this.userService.logOut();
     this.router.navigate(['/']);
   }
+
+  routeHome(): void {
+    if (this.userService.loggedIn())
+      this.router.navigate(['home']);
+    else 
+      this.router.navigate(['/']);
+  }
 }

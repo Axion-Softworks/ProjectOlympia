@@ -1,26 +1,84 @@
-<h2>Open Drafts</h2>
 <mat-spinner class="loading-spinner" *ngIf="loadingDrafts"></mat-spinner>
 
-<table *ngIf="!loadingDrafts" mat-table [dataSource]="drafts" class="grey-background">
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.name}}</td>
-    </ng-container>
-    <ng-container matColumnDef="athletes">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Athletes</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.athleteCount}}</td>
-    </ng-container>
-    <ng-container matColumnDef="users">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Players</th>
-        <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.userCount}}</td>
-    </ng-container>
-    <ng-container matColumnDef="button">
-        <th mat-header-cell *matHeaderCellDef class="draft-headers white-text"></th>
-        <td mat-cell *matCellDef="let draft" class="button-cell">            
-            <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">Open Draft</button>
-        </td>
-    </ng-container>
+@if (!loadingDrafts) {
+    @if (openDrafts.length > 0) {
+        <h2>Open Drafts</h2>
+        <table mat-table [dataSource]="openDrafts" class="grey-background">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="athletes">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Athletes</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.athleteCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="users">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Players</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.userCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="button">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text"></th>
+                <td mat-cell *matCellDef="let draft" class="button-cell">            
+                    <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">View Draft</button>
+                </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    }
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    @if (inProgressDrafts.length > 0) {
+        <h2 class="pt-12">Active Drafts</h2>
+        <table *ngIf="!loadingDrafts && inProgressDrafts.length > 0" mat-table [dataSource]="inProgressDrafts" class="grey-background">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="athletes">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Athletes</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.athleteCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="users">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Players</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.userCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="button">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text"></th>
+                <td mat-cell *matCellDef="let draft" class="button-cell">            
+                    <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">View Draft</button>
+                </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    }
+    
+    @if (closedDrafts.length > 0) {
+        <h2 class="pt-12">Closed Drafts</h2>
+        <table *ngIf="!loadingDrafts && closedDrafts.length > 0" mat-table [dataSource]="closedDrafts" class="grey-background">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="athletes">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Athletes</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.athleteCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="users">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Players</th>
+                <td mat-cell *matCellDef="let draft" class="draft-values white-text">{{draft.userCount}}</td>
+            </ng-container>
+            <ng-container matColumnDef="button">
+                <th mat-header-cell *matHeaderCellDef class="draft-headers white-text"></th>
+                <td mat-cell *matCellDef="let draft" class="button-cell">            
+                    <button class="white-text button-affirmative" mat-raised-button (click)="openDraft(draft.id)">View Draft</button>
+                </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    }
+}

@@ -2,8 +2,9 @@ import { Inject, Injectable } from "@angular/core";
 import { WebSocketMessage } from "../models/web-socket/web-socket-message";
 import { EWebSocketOperation } from "../models/web-socket/e-web-socket-operation";
 import { WebSocketResponse } from "../models/web-socket/web-socket-response";
-import { AthleteDraftedResponse } from "../models/web-socket/althete-drafted-response";
+import { AthleteDraftedResponse } from "../models/web-socket/athlete-drafted-response";
 import { Subject } from "rxjs";
+import { DraftStartedResponse } from "../models/web-socket/draft-started-response";
 
 @Injectable({
     providedIn: "root"
@@ -21,6 +22,7 @@ export class WebSocketService {
     }
 
     public readonly onAthleteDrafted: Subject<AthleteDraftedResponse> = new Subject();
+    public readonly onDraftStarted: Subject<DraftStartedResponse> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string
@@ -80,6 +82,12 @@ export class WebSocketService {
 
                 break;
         
+            case EWebSocketOperation.DraftStarted:
+                const draftStartedResponse: DraftStartedResponse = JSON.parse(response.content);
+
+                this.onDraftStarted.next(draftStartedResponse);
+                break;
+
             default:
                 break;
         }

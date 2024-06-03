@@ -4,6 +4,7 @@ import { Draft } from '../models/draft';
 import { Athlete } from '../models/athlete';
 import { DraftAthleteRequest } from '../models/requests/draft-athlete-request';
 import { DraftSummary } from '../models/draft-summary';
+import { EDraftStatus } from '../models/e-draft-status';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,16 @@ export class DraftService {
   public getDraftSummariesByUserId(userId: string): Promise<DraftSummary[]> {
     return new Promise((resolve) => {
       this.http.get<DraftSummary[]>(this.baseUrl + 'api/draft/summary/' + userId)
+      .subscribe({
+        next: (result) => { resolve(result) }, 
+        error: (e) => console.error(e)
+      });
+    })
+  }
+
+  public setDraftStatus(draftId: string, status: EDraftStatus): Promise<Draft> {
+    return new Promise((resolve) => {
+      this.http.put<Draft>(this.baseUrl + 'api/draft/status/' + draftId + '/' + status, null)
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)

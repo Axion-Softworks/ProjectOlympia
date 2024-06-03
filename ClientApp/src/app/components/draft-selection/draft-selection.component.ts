@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { DraftSummary } from 'src/app/models/draft-summary';
+import { EDraftStatus } from 'src/app/models/e-draft-status';
 import { DraftService } from 'src/app/services/draft-service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -16,7 +17,7 @@ import { UserService } from 'src/app/services/user.service';
 
         MatButtonModule,
         MatTableModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
     ],
     templateUrl: './draft-selection.component.html',
     styleUrl: './draft-selection.component.css',
@@ -24,7 +25,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class DraftSelectionComponent { 
 
-    drafts: DraftSummary[] = [];
+    openDrafts: DraftSummary[] = [];
+    inProgressDrafts: DraftSummary[] = [];
+    closedDrafts: DraftSummary[] = [];
     displayedColumns: string[] = ['name', 'athletes', 'users', 'button'];
 
     loadingDrafts: boolean;
@@ -33,7 +36,9 @@ export class DraftSelectionComponent {
         this.loadingDrafts = true;
         this.draftService.getDraftSummariesByUserId(this.userService.getId())
             .then((result: DraftSummary[]) => {
-                this.drafts = result;
+                this.openDrafts = result.filter(f => f.status == EDraftStatus.open);
+                this.inProgressDrafts = result.filter(f => f.status == EDraftStatus.inProgress);
+                this.closedDrafts = result.filter(f => f.status == EDraftStatus.closed);
                 this.loadingDrafts = false;
             });
     }
@@ -43,7 +48,6 @@ export class DraftSelectionComponent {
     }
 
     openDraft(id: string): void {
-        console.log(this.drafts.find(f=>f.id == id));
         this.router.navigate(['/draft', id])
     }
 }

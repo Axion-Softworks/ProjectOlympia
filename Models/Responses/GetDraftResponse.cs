@@ -6,10 +6,12 @@ public class GetDraftResponse
     public string Name { get; set; }
     public List<UserData> Users { get; set; } = new List<UserData>();
     public List<AthleteData> Athletes { get; set; } = new List<AthleteData>();
+    public EDraftStatus Status { get; set; }
 
     public GetDraftResponse(Draft draft)
     {
         Id = draft.Id;
         Name = draft.Name;
+        Status = draft.Status;
     }
 }

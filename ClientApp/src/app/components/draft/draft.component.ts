@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { Subject, takeUntil } from 'rxjs';
+import { EDraftStatus } from 'src/app/models/e-draft-status';
 
 @Component({
   selector: 'draft',
@@ -51,7 +52,6 @@ export class DraftComponent implements OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject();
 
   public draft?: Draft;
-  public draftStarted: boolean = false;
 
   public rowHeight = "1:1";
 
@@ -87,6 +87,13 @@ export class DraftComponent implements OnDestroy {
         athlete.userId = response.userId;
       }
     });
+
+    this.webSocketService.onDraftStarted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response) => {
+        if (this.draft && this.draft.id == response.draftId)
+          this.draft.status = response.status
+      }
+    })
   }
 
   ngOnDestroy(): void {
@@ -181,6 +188,17 @@ export class DraftComponent implements OnDestroy {
   }
 
   startDraft(): void {
-    this.draftStarted = true;
+    if (!this.draft)
+      return;
+
+    this.draftService.setDraftStatus(this.draft?.id, EDraftStatus.inProgress);
+  }
+
+  draftIsOpen(): boolean {
+    return this.draft?.status == EDraftStatus.open;
+  }
+
+  draftIsInProgress(): boolean {
+    return this.draft?.status == EDraftStatus.inProgress;
   }
 }

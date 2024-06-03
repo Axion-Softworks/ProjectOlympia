@@ -11,12 +11,14 @@ public class DraftController : ControllerBase
     private readonly ILogger<DraftController> _logger;
     private readonly IMapper _mapper;
     private DraftingContext _context;
+    private IWebSocketService _websocketService;
 
-    public DraftController(ILogger<DraftController> logger, IMapper mapper, DraftingContext draftingContext)
+    public DraftController(ILogger<DraftController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketService webSocketService)
     {
         _logger = logger;
         _mapper = mapper;
         _context = draftingContext;
+        _websocketService = webSocketService;
     }
 
     [HttpGet]
@@ -137,7 +139,7 @@ public class DraftController : ControllerBase
     [HttpPut("status/{id}/{status}")]
     public async Task<IActionResult> SetDraftStatusAsync([FromRoute] Guid id, [FromRoute] EDraftStatus status)
     {
-        var draft = this._context.Drafts.FirstOrDefault(f => f.Id == id);
+        var draft = this._context.Drafts.Include(i => i.Users).FirstOrDefault(f => f.Id == id);
 
         if (draft == null)
             return NotFound();
@@ -147,7 +149,10 @@ public class DraftController : ControllerBase
         _context.Update(draft);
         await _context.SaveChangesAsync();
 
-        return Ok(draft);
+        if (status == EDraftStatus.InProgress)
+            await this._websocketService.SendDraftStartedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList());
+
+        return Ok();
     }
 
     [HttpDelete("{id}")]
