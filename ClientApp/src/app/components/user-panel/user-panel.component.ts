@@ -21,4 +21,16 @@ export class UserPanelComponent {
     @Input() user!: User;
 
     constructor() {}
+
+    getUserBorderStyle(): Object {
+        //TODO: ONLY RETURN IF IT IS THAT USERS TURN
+
+        var style = {
+            'border': this.user.hexColor,
+            'border-width': 'thin',
+            'border-style': 'groove'
+        }
+
+        return style;
+    }
 }

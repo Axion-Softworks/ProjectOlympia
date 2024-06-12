@@ -102,3 +102,9 @@
    /* filter: invert(1); */
   max-width: 200px;
 }
+
+.space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

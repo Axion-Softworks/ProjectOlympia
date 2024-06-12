@@ -47,6 +47,10 @@ body {
   padding-left: 6px;
 }
 
+.mr-12 {
+  margin-right: 12px;
+}
+
 .button-affirmative {
   background-color: darkgreen !important;
 }

@@ -1,4 +1,4 @@
-<mat-expansion-panel class="user-panel" hideToggle>
+<mat-expansion-panel class="user-panel" [ngStyle]="getUserBorderStyle()" hideToggle>
     <mat-expansion-panel-header>
       <mat-panel-title class="user-panel">
         {{user.username}}

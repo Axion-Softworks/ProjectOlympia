@@ -7,4 +7,5 @@ export interface User {
     athletes: Athlete[];
     drafts: DraftSummary[];
     isAdmin: boolean;
+    hexColor: string;
 }

@@ -4,18 +4,23 @@
         <mat-spinner class="spinner"></mat-spinner>
     </div>
     <div *ngIf="athlete != undefined" class="athlete-parent">
-        <div class="country-name">
-            <div matTooltip="{{athlete.country}}" class="country">
-                <span class="fi fi-{{athlete.iso}}" ></span>
-            </div>
-            <div class="names">
-                <div class="surname">
-                    <b>{{athlete.surname}}</b>
+        <div class="space-between">
+            <div class="country-name">
+                <div matTooltip="{{athlete.country}}" class="country">
+                    <span class="fi fi-{{athlete.iso}}" ></span>
                 </div>
-                <div class="forename">
-                    {{athlete.forename}}
+                <div class="names">
+                    <div class="surname">
+                        <b>{{athlete.surname}}</b>
+                    </div>
+                    <div class="forename">
+                        {{athlete.forename}}
+                    </div>
                 </div>
             </div>
+            <mat-icon *ngIf="athlete.userId" class="material-symbols-outlined mr-12" [ngStyle]="{'color': draftedUserData?.hexColor}" matTooltip="{{draftedUserData?.username}}">
+                workspace_premium
+            </mat-icon>
         </div>
         <div class="discipline">
             <img class="discipline-image" src="assets/pictogram/{{athlete.discipline}}.avif" matTooltip="{{athlete.discipline}}">

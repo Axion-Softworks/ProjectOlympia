@@ -18,6 +18,7 @@ import { WebSocketService } from 'src/app/services/web-socket.service';
 import { Subject, takeUntil } from 'rxjs';
 import { EDraftStatus } from 'src/app/models/e-draft-status';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DraftedUserData } from 'src/app/models/drafted-user-data';
 
 @Component({
   selector: 'draft',
@@ -205,5 +206,19 @@ export class DraftComponent implements OnDestroy {
 
   draftIsInProgress(): boolean {
     return this.draft?.status == EDraftStatus.inProgress;
+  }
+
+  getDraftedUserData(userId: string): DraftedUserData | null {
+    if (userId == null || userId == undefined)
+      return null;
+
+    var user = this.draft?.users.find(f => f.id == userId);
+
+    if (user == undefined)
+      return null;
+
+    let draftedUserData: DraftedUserData = { id: user.id, username: user.username, hexColor: user.hexColor };
+
+    return draftedUserData;
   }
 }

@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Athlete } from 'src/app/models/athlete';
 import { AthleteConfirmDialogComponent } from './athlete-confirm-dialog/athlete-confirm-dialog.component';
+import { DraftedUserData } from 'src/app/models/drafted-user-data';
 
 @Component({
     selector: 'athlete-card',
@@ -28,6 +29,7 @@ export class AthleteCardComponent {
     @Input() athlete!: Athlete;
     @Input() disabled: boolean = false;
     @Input() draftStarted: boolean = false;
+    @Input() draftedUserData?: DraftedUserData | null;
     @Output() emitDraft: EventEmitter<Athlete> = new EventEmitter<Athlete>();
 
     constructor(public dialog: MatDialog) {
