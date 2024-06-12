@@ -17,6 +17,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { Subject, takeUntil } from 'rxjs';
 import { EDraftStatus } from 'src/app/models/e-draft-status';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'draft',
@@ -33,6 +34,7 @@ import { EDraftStatus } from 'src/app/models/e-draft-status';
     MatButtonModule,
     MatProgressSpinnerModule,
     ScrollingModule,
+    MatSnackBarModule,
 
     AthleteCardComponent,
     UserPanelComponent
@@ -59,7 +61,8 @@ export class DraftComponent implements OnDestroy {
     private route: ActivatedRoute,
     private draftService: DraftService,
     private userService: UserService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private snackBar: MatSnackBar
   ) {
     var draftId = this.route.snapshot.paramMap.get('id');
 
@@ -85,13 +88,15 @@ export class DraftComponent implements OnDestroy {
         user?.athletes.push(athlete);
 
         athlete.userId = response.userId;
+        this.snackBar.open(`${user?.username} drafted ${athlete.forename} ${athlete.surname}`, "DRAFTED", { duration: 2000 });
       }
     });
 
     this.webSocketService.onDraftStarted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (response) => {
         if (this.draft && this.draft.id == response.draftId)
-          this.draft.status = response.status
+          this.draft.status = response.status;
+          this.snackBar.open("The draft has begun!", "START", { duration: 2000 })
       }
     })
   }
