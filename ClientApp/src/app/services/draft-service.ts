@@ -55,4 +55,14 @@ export class DraftService {
     })
   }
 
+  public randomiseDraft(draftId: string): Promise<any> {
+    return new Promise((resolve) => {
+      this.http.put<any>(this.baseUrl + 'api/draft/randomise/' + draftId, null)
+      .subscribe({
+        next: (result) => { resolve(result) }, 
+        error: (e) => console.error(e)
+      });
+    })
+  }
+
 }

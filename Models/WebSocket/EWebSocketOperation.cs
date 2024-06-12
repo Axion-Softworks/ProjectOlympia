@@ -4,6 +4,7 @@ namespace ProjectOlympia
     {
         Auth,
         AthleteDrafted,
-        DraftOpened
+        DraftStarted,
+        DraftRandomised
     }
 }

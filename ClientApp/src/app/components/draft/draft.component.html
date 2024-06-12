@@ -6,7 +6,8 @@
   <div class="sidebar">
     @if (userIsAdmin() && draftIsOpen()) {
       <div>
-        <button class="white-text button-affirmative" mat-raised-button (click)="startDraft()">Start Draft</button>
+        <button class="white-text button-affirmative mb-12" mat-raised-button (click)="randomiseDraft()">Randomise Draft</button>
+        <button *ngIf="enableStartDraftButton()" class="white-text button-affirmative" mat-raised-button (click)="startDraft()">Start Draft</button>
       </div>
     }
 
@@ -22,9 +23,17 @@
       <div class="pb-12">Players</div>
 
       <mat-accordion>
-        @for(user of draft.users; track user) {
-          <user-panel [user]="user" class="pb-12"></user-panel>
+        @if(draft.draftOrder.length > 0) {
+          @for(userId of draft.draftOrder; track userId) {
+            <user-panel [user]="getUser(userId)" class="pb-12"></user-panel>
+          }
         }
+        @else {
+          @for(user of draft.users; track user) {
+            <user-panel [user]="user" class="pb-12"></user-panel>
+          }
+        }
+        
       </mat-accordion>
     </div>
   </div>

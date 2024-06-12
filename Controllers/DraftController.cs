@@ -155,6 +155,27 @@ public class DraftController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("randomise/{id}")]
+    public async Task<IActionResult> RandomiseDraftOrder([FromRoute] Guid id)
+    {
+        var draft = this._context.Drafts.Include(i => i.Users).FirstOrDefault(f => f.Id == id);
+
+        if (draft == null)
+            return NotFound();
+
+        Random rng = new Random();
+        var order = draft.Users.Select(s => s.Id.ToString()).OrderBy(_ => rng.Next()).ToList();
+        
+        draft.DraftOrder = string.Join(',', order);
+
+        _context.Update(draft);
+        await _context.SaveChangesAsync();
+
+        await this._websocketService.SendDraftRandomisedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList(), order);
+
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDraftAsync([FromRoute] Guid id)
     {

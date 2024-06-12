@@ -8,4 +8,5 @@ export interface Draft {
     users: User[];
     athletes: Athlete[];
     status: EDraftStatus;
+    draftOrder: string[];
 }

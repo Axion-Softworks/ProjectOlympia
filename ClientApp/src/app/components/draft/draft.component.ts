@@ -19,6 +19,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { EDraftStatus } from 'src/app/models/e-draft-status';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DraftedUserData } from 'src/app/models/drafted-user-data';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'draft',
@@ -70,8 +71,8 @@ export class DraftComponent implements OnDestroy {
     if (!!draftId) {
       this.draftService.getDraft(draftId)
         .then((result: Draft) => {
-          //console.log(this.draft)
           this.draft = result;
+          //console.log(this.draft)
           this.draft?.users.forEach(user => {
             user.athletes = this.draft ? this.draft?.athletes.filter(f => f.userId == user.id) : [];
           });
@@ -95,9 +96,21 @@ export class DraftComponent implements OnDestroy {
 
     this.webSocketService.onDraftStarted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (response) => {
-        if (this.draft && this.draft.id == response.draftId)
+        if (this.draft && this.draft.id == response.draftId) {
           this.draft.status = response.status;
           this.snackBar.open("The draft has begun!", "START", { duration: 2000 })
+        }
+      }
+    })
+
+    this.webSocketService.onDraftRandomised.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response) => {
+        if (this.draft && this.draft.id == response.draftId) {
+
+          this.draft.draftOrder = response.draftOrder;
+
+          this.snackBar.open("The draft order has been randomised!", "RANDOM", { duration: 2000 })
+        }
       }
     })
   }
@@ -220,5 +233,22 @@ export class DraftComponent implements OnDestroy {
     let draftedUserData: DraftedUserData = { id: user.id, username: user.username, hexColor: user.hexColor };
 
     return draftedUserData;
+  }
+
+  enableStartDraftButton(): boolean {
+    return !!this.draft && !!this.draft.draftOrder && this.draft.draftOrder.length > 0;
+  }
+
+  randomiseDraft(): void {
+    if (!this.draft)
+      return;
+
+    this.draftService.randomiseDraft(this.draft?.id);
+  }
+
+  getUser(userId: string): User {
+    var user = this.draft?.users.find(f => f.id == userId);
+
+    return user ? user : { id: "1", username: "error", athletes: [], drafts: [], hexColor: "", isAdmin: false };
   }
 }

@@ -5,6 +5,7 @@ import { WebSocketResponse } from "../models/web-socket/web-socket-response";
 import { AthleteDraftedResponse } from "../models/web-socket/athlete-drafted-response";
 import { Subject } from "rxjs";
 import { DraftStartedResponse } from "../models/web-socket/draft-started-response";
+import { DraftRandomisedResponse } from "../models/web-socket/draft-randomised-response";
 
 @Injectable({
     providedIn: "root"
@@ -23,6 +24,7 @@ export class WebSocketService {
 
     public readonly onAthleteDrafted: Subject<AthleteDraftedResponse> = new Subject();
     public readonly onDraftStarted: Subject<DraftStartedResponse> = new Subject();
+    public readonly onDraftRandomised: Subject<DraftRandomisedResponse> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string
@@ -86,6 +88,12 @@ export class WebSocketService {
                 const draftStartedResponse: DraftStartedResponse = JSON.parse(response.content);
 
                 this.onDraftStarted.next(draftStartedResponse);
+                break;
+
+            case EWebSocketOperation.DraftRandomised:
+                const draftRandomisedResponse: DraftRandomisedResponse = JSON.parse(response.content);
+
+                this.onDraftRandomised.next(draftRandomisedResponse);
                 break;
 
             default:
