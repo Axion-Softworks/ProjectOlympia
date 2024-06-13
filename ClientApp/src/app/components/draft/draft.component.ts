@@ -20,6 +20,8 @@ import { EDraftStatus } from 'src/app/models/e-draft-status';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DraftedUserData } from 'src/app/models/drafted-user-data';
 import { User } from 'src/app/models/user';
+import { MatDialog } from '@angular/material/dialog';
+import { GenericConfirmDialogComponent } from '../generic-confirm-dialog/generic-confirm-dialog.component';
 
 @Component({
   selector: 'draft',
@@ -71,7 +73,8 @@ export class DraftComponent implements OnDestroy {
     private draftService: DraftService,
     private userService: UserService,
     private webSocketService: WebSocketService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {
     var draftId = this.route.snapshot.paramMap.get('id');
 
@@ -246,7 +249,14 @@ export class DraftComponent implements OnDestroy {
     if (!this.draft)
       return;
 
-    this.draftService.setDraftStatus(this.draft?.id, EDraftStatus.inProgress);
+    const dialogRef = this.dialog.open(GenericConfirmDialogComponent, {
+      data: { title: "Start Draft?", message: "Are you sure you want to start this draft?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true && !!this.draft)
+        this.draftService.setDraftStatus(this.draft.id, EDraftStatus.inProgress);
+    });
   }
 
   draftIsOpen(): boolean {
