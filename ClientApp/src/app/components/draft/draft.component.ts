@@ -57,6 +57,13 @@ export class DraftComponent implements OnDestroy {
 
   public draft?: Draft;
 
+  public currentRoundPick: number = 0;
+  public currentRound: number = 0;
+  public totalRounds: number = 0;
+  public picksRemaining: number = 0;
+  public currentTurnUser?: User;
+  public orderedUsers: User[] = [];
+
   public rowHeight = "1:1";
 
   constructor(
@@ -73,9 +80,25 @@ export class DraftComponent implements OnDestroy {
         .then((result: Draft) => {
           this.draft = result;
           //console.log(this.draft)
+
           this.draft?.users.forEach(user => {
             user.athletes = this.draft ? this.draft?.athletes.filter(f => f.userId == user.id) : [];
           });
+
+          if (!!this.draft.draftOrder && this.draft.draftOrder.length > 0) {
+            this.draft.draftOrder.forEach(id => {
+              var user = this.draft?.users.find(f => f.id == id);
+              
+              if (user)
+                this.orderedUsers.push(user);
+            });
+          }
+
+          this.calculatePicksRemaining();
+          this.totalRounds = this.calculateTotalRounds();
+          this.currentRound = this.calculateCurrentRound();
+          this.currentRoundPick = this.calculateCurrentRoundPick();
+          this.calculateCurrentTurnUser();
         });
     }
 
@@ -91,6 +114,11 @@ export class DraftComponent implements OnDestroy {
 
         athlete.userId = response.userId;
         this.snackBar.open(`${user?.username} drafted ${athlete.forename} ${athlete.surname}`, "DRAFTED", { duration: 2000 });
+
+        this.calculatePicksRemaining();
+        this.currentRound = this.calculateCurrentRound();
+        this.currentRoundPick = this.calculateCurrentRoundPick();
+        this.calculateCurrentTurnUser();
       }
     });
 
@@ -108,6 +136,13 @@ export class DraftComponent implements OnDestroy {
         if (this.draft && this.draft.id == response.draftId) {
 
           this.draft.draftOrder = response.draftOrder;
+
+          this.draft.draftOrder.forEach(id => {
+            var user = this.draft?.users.find(f => f.id == id);
+          
+            if (!!user)
+              this.orderedUsers.push(user);
+          });
 
           this.snackBar.open("The draft order has been randomised!", "RANDOM", { duration: 2000 })
         }
@@ -193,6 +228,10 @@ export class DraftComponent implements OnDestroy {
       .then(() => {
         user.athletes.push(athlete);
         athlete.userId = user.id;
+        this.calculatePicksRemaining();
+        this.currentRound = this.calculateCurrentRound();
+        this.currentRoundPick = this.calculateCurrentRoundPick();
+        this.calculateCurrentTurnUser();
       });
   }
 
@@ -236,7 +275,7 @@ export class DraftComponent implements OnDestroy {
   }
 
   enableStartDraftButton(): boolean {
-    return !!this.draft && !!this.draft.draftOrder && this.draft.draftOrder.length > 0;
+    return !!this.draft && this.orderedUsers.length > 0;
   }
 
   randomiseDraft(): void {
@@ -250,5 +289,57 @@ export class DraftComponent implements OnDestroy {
     var user = this.draft?.users.find(f => f.id == userId);
 
     return user ? user : { id: "1", username: "error", athletes: [], drafts: [], hexColor: "", isAdmin: false };
+  }
+
+  calculatePicksRemaining() {
+    if (this.draft)
+      this.picksRemaining = (this.draft.athletes.length / 2) - this.draft.athletes.filter(f => f.userId != null).length;
+  }
+
+  calculateCurrentRoundPick() : number {
+    if (!this.draft)
+        return 0;
+
+    var currentPick = ((this.draft.athletes.length / 2) - this.picksRemaining);
+
+    var roundPick = (currentPick % this.draft.users.length);
+
+    return roundPick;
+  }
+
+  calculateCurrentRound() : number {
+    if (!this.draft)
+      return 0;
+
+    var snakeLength = this.draft.users.length;
+    var picksTaken = this.draft.athletes.filter(f => f.userId != null).length + 1;
+    var round = Math.ceil(picksTaken/snakeLength);
+
+    //console.log("Round calc", snakeLength, picksTaken, round)
+
+    return round % 1 == 0 ? round : round + 1;
+  }
+
+  calculateTotalRounds() : number {
+    if (!this.draft)
+      return 0;
+
+    var snakeLength = this.draft.users.length;
+    var totalPicks = this.draft.athletes.length / 2;
+    var rounds = totalPicks/snakeLength;
+
+    return Math.ceil(rounds);
+  }
+
+  calculateCurrentTurnUser() {
+    if (!this.draft)
+      return;
+
+    let users = this.orderedUsers.slice();
+
+    if (this.currentRound % 2 == 0) //if round is even
+      users.reverse();
+
+    this.currentTurnUser = users[this.currentRoundPick];
   }
 }

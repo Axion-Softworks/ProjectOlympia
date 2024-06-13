@@ -55,6 +55,10 @@ body {
   margin-bottom: 12px;
 }
 
+.ml-12 {
+  margin-left: 12px;
+}
+
 .button-affirmative {
   background-color: darkgreen !important;
 }

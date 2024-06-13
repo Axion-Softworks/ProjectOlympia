@@ -87,7 +87,7 @@
 
 .info-parent {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .athlete-parent {

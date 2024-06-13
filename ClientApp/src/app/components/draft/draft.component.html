@@ -19,18 +19,27 @@
       </mat-button-toggle-group>
     </div>
 
+    @if(orderedUsers.length > 0) {
+      <div class="picks-remaining">
+        <div class="pb-12">Round</div>
+        <div>{{currentRound}}/{{totalRounds}}</div>
+        <div class="pb-12">Pick</div>
+        <div>{{currentRoundPick + 1}}/{{orderedUsers.length}}</div>
+      </div>
+    }
+    
     <div class="users-section">
       <div class="pb-12">Players</div>
 
       <mat-accordion>
         @if(draft.draftOrder.length > 0) {
           @for(userId of draft.draftOrder; track userId) {
-            <user-panel [user]="getUser(userId)" class="pb-12"></user-panel>
+            <user-panel [user]="getUser(userId)" [currentUserId]="currentTurnUser?.id" class="pb-12"></user-panel>
           }
         }
         @else {
           @for(user of draft.users; track user) {
-            <user-panel [user]="user" class="pb-12"></user-panel>
+            <user-panel [user]="user" [currentUserId]="currentTurnUser?.id" class="pb-12"></user-panel>
           }
         }
         

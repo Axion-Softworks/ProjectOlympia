@@ -19,11 +19,14 @@ import { User } from 'src/app/models/user';
 })
 export class UserPanelComponent { 
     @Input() user!: User;
+    @Input() currentUserId: string | undefined = "";
 
     constructor() {}
 
     getUserBorderStyle(): Object {
         //TODO: ONLY RETURN IF IT IS THAT USERS TURN
+        if (this.user.id != this.currentUserId)
+            return {};
 
         var style = {
             'border': this.user.hexColor,
