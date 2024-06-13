@@ -2,6 +2,7 @@ a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  cursor: pointer;
 }
 
 html {
@@ -27,4 +28,12 @@ a {
 
 .log-out-button {
   cursor: pointer;
+}
+
+.user-name-item {
+  align-content: center;
+}
+
+.user-name {
+  font-size: larger;
 }

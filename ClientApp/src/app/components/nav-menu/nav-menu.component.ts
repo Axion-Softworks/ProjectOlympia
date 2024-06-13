@@ -35,4 +35,8 @@ export class NavMenuComponent {
     else 
       this.router.navigate(['/']);
   }
+
+  getUserName(): string {
+    return this.userService.getUsername();
+  }
 }
