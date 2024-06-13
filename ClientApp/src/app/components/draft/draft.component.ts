@@ -94,11 +94,7 @@ export class DraftComponent implements OnDestroy {
             });
           }
 
-          this.calculatePicksRemaining();
-          this.totalRounds = this.calculateTotalRounds();
-          this.currentRound = this.calculateCurrentRound();
-          this.currentRoundPick = this.calculateCurrentRoundPick();
-          this.calculateCurrentTurnUser();
+          this.calculateDraftData();
         });
     }
 
@@ -115,10 +111,7 @@ export class DraftComponent implements OnDestroy {
         athlete.userId = response.userId;
         this.snackBar.open(`${user?.username} drafted ${athlete.forename} ${athlete.surname}`, "DRAFTED", { duration: 2000 });
 
-        this.calculatePicksRemaining();
-        this.currentRound = this.calculateCurrentRound();
-        this.currentRoundPick = this.calculateCurrentRoundPick();
-        this.calculateCurrentTurnUser();
+        this.calculateDraftData();
       }
     });
 
@@ -127,6 +120,8 @@ export class DraftComponent implements OnDestroy {
         if (this.draft && this.draft.id == response.draftId) {
           this.draft.status = response.status;
           this.snackBar.open("The draft has begun!", "START", { duration: 2000 })
+
+          this.calculateDraftData();
         }
       }
     })
@@ -136,6 +131,8 @@ export class DraftComponent implements OnDestroy {
         if (this.draft && this.draft.id == response.draftId) {
 
           this.draft.draftOrder = response.draftOrder;
+
+          this.orderedUsers = [];
 
           this.draft.draftOrder.forEach(id => {
             var user = this.draft?.users.find(f => f.id == id);
@@ -341,5 +338,13 @@ export class DraftComponent implements OnDestroy {
       users.reverse();
 
     this.currentTurnUser = users[this.currentRoundPick];
+  }
+
+  calculateDraftData() {
+    this.calculatePicksRemaining();
+    this.totalRounds = this.calculateTotalRounds();
+    this.currentRound = this.calculateCurrentRound();
+    this.currentRoundPick = this.calculateCurrentRoundPick();
+    this.calculateCurrentTurnUser();
   }
 }

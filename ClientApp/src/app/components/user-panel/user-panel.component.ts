@@ -19,13 +19,13 @@ import { User } from 'src/app/models/user';
 })
 export class UserPanelComponent { 
     @Input() user!: User;
-    @Input() currentUserId: string | undefined = "";
+    @Input() enableUserHighlight: boolean = false;
 
     constructor() {}
 
     getUserBorderStyle(): Object {
         //TODO: ONLY RETURN IF IT IS THAT USERS TURN
-        if (this.user.id != this.currentUserId)
+        if (!this.enableUserHighlight)
             return {};
 
         var style = {
