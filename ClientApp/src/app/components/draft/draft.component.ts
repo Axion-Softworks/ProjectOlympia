@@ -347,4 +347,8 @@ export class DraftComponent implements OnDestroy {
     this.currentRoundPick = this.calculateCurrentRoundPick();
     this.calculateCurrentTurnUser();
   }
+
+  isUsersTurn() : boolean {
+    return this.userService.getId() == this.currentTurnUser?.id;
+  }
 }

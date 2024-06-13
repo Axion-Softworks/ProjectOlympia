@@ -30,6 +30,7 @@ export class AthleteCardComponent {
     @Input() disabled: boolean = false;
     @Input() draftStarted: boolean = false;
     @Input() draftedUserData?: DraftedUserData | null;
+    @Input() userTurn: boolean = false;
     @Output() emitDraft: EventEmitter<Athlete> = new EventEmitter<Athlete>();
 
     constructor(public dialog: MatDialog) {
@@ -41,7 +42,7 @@ export class AthleteCardComponent {
             return;
 
         const dialogRef = this.dialog.open(AthleteConfirmDialogComponent, {
-            data: { athlete: this.athlete, buttonsEnabled: this.draftStarted },
+            data: { athlete: this.athlete, buttonsEnabled: this.draftStarted && this.userTurn },
             maxWidth: '500px',
             minWidth: '400px'
         });

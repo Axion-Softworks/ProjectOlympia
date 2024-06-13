@@ -50,7 +50,7 @@
   <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
     <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
       <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
-        <athlete-card [athlete]="athlete" [draftedUserData]="getDraftedUserData(athlete.userId)" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftIsInProgress()" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
+        <athlete-card [athlete]="athlete" [draftedUserData]="getDraftedUserData(athlete.userId)" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftIsInProgress()" [userTurn]="isUsersTurn()" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
       </mat-grid-tile>
     </mat-grid-list>
   </cdk-virtual-scroll-viewport>
