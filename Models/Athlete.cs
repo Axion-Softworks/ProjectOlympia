@@ -14,6 +14,7 @@ public class Athlete
     public User? User { get; set; }
     public Guid? UserId { get; set; }
     public required Draft Draft { get; set; }
+    public required int Group { get; set; } = -1;
 
     public Athlete() {}
     public Athlete(string forename, string surname, string description, string discipline, string country, string countryCode, string iso, List<Medal> medals, Draft draft)

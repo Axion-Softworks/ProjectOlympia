@@ -11,4 +11,5 @@ export interface Athlete {
     iso: string;
     medals: Medal[];
     userId: string;
+    group: number;
 }

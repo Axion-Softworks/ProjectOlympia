@@ -4,10 +4,11 @@
 
 <div class="grid-container" *ngIf="!!draft">
   <div class="sidebar">
-    @if (userIsAdmin() && draftIsOpen()) {
+    @if (userIsAdmin()) {
       <div>
-        <button class="white-text button-affirmative mb-12" mat-raised-button (click)="randomiseDraft()">Randomise Draft</button>
+        <button *ngIf="draftIsNotStarted()" class="white-text button-affirmative mb-12" mat-raised-button (click)="randomiseDraft()">Randomise Draft</button>
         <button *ngIf="enableStartDraftButton()" class="white-text button-affirmative" mat-raised-button (click)="startDraft()">Start Draft</button>
+        <button *ngIf="individualDraftComplete" class="white-text button-affirmative" mat-raised-button (click)="startGroupDraft()">Start Group Draft</button>
       </div>
     }
 
@@ -47,11 +48,20 @@
     </div>
   </div>
 
-  <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
-    <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
-      <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
-        <athlete-card [athlete]="athlete" [draftedUserData]="getDraftedUserData(athlete.userId)" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftIsInProgress()" [userTurn]="isUsersTurn()" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </cdk-virtual-scroll-viewport>
+  @if (!individualDraftComplete) {
+    <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
+      <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
+        <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
+          <athlete-card [athlete]="athlete" [draftedUserData]="getDraftedUserData(athlete.userId)" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="draftIsInProgress()" [userTurn]="isUsersTurn()" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </cdk-virtual-scroll-viewport>
+  }
+  @else {
+    <div class="intermediate-message">
+      <div>The first stage of drafting is complete!</div>
+      <div>Waiting for Admin to continue...</div>
+    </div>
+  }
+  
 </div>

@@ -64,9 +64,17 @@ export class DraftComponent implements OnDestroy {
   public currentRoundPick: number = 0;
   public currentRound: number = 0;
   public totalRounds: number = 0;
-  public picksRemaining: number = 0;
   public currentTurnUser?: User;
   public orderedUsers: User[] = [];
+  private _picksRemaining: number = 0
+  public get picksRemaining(): number { return this._picksRemaining };
+  public set picksRemaining(value: number) { 
+    this._picksRemaining = value;
+    if (value == 0)
+      this.individualDraftComplete = true;
+   }
+
+  public individualDraftComplete: boolean = false; 
 
   public rowHeight = "1:1";
 
@@ -265,16 +273,16 @@ export class DraftComponent implements OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true && !!this.draft)
-        this.draftService.setDraftStatus(this.draft.id, EDraftStatus.inProgress);
+        this.draftService.setDraftStatus(this.draft.id, EDraftStatus.individualDraft);
     });
   }
 
-  draftIsOpen(): boolean {
-    return this.draft?.status == EDraftStatus.open;
+  draftIsNotStarted(): boolean {
+    return this.draft?.status == EDraftStatus.notStarted;
   }
 
   draftIsInProgress(): boolean {
-    return this.draft?.status == EDraftStatus.inProgress;
+    return this.draft?.status == EDraftStatus.individualDraft && !this.individualDraftComplete;
   }
 
   getDraftedUserData(userId: string): DraftedUserData | null {
@@ -292,7 +300,7 @@ export class DraftComponent implements OnDestroy {
   }
 
   enableStartDraftButton(): boolean {
-    return !!this.draft && this.orderedUsers.length > 0;
+    return !!this.draft && this.orderedUsers.length > 0 && this.draftIsNotStarted();
   }
 
   randomiseDraft(): void {
@@ -370,5 +378,9 @@ export class DraftComponent implements OnDestroy {
 
   isUsersTurn() : boolean {
     return this.userService.getId() == this.currentTurnUser?.id;
+  }
+
+  startGroupDraft() {
+
   }
 }

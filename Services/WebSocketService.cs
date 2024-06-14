@@ -37,7 +37,7 @@ namespace ProjectOlympia
             var response = new DraftOpenedResponse
             {
                 DraftId = draftId,
-                Status = EDraftStatus.InProgress
+                Status = EDraftStatus.IndividualDraft
             };
 
             string responseJson = JsonConvert.SerializeObject(response);

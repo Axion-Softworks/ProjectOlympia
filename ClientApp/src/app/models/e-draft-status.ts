@@ -1,5 +1,6 @@
 export enum EDraftStatus {
-    open,
-    inProgress,
+    notStarted,
+    individualDraft,
+    groupDraft,
     closed
 }

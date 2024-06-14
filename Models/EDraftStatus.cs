@@ -2,7 +2,8 @@ namespace ProjectOlympia;
 
 public enum EDraftStatus
 {
-    Open,
-    InProgress,
+    NotStarted,
+    IndividualDraft,
+    GroupDraft,
     Closed
 }

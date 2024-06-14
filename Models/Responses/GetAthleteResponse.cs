@@ -13,6 +13,7 @@ public class GetAthleteResponse
     public List<MedalData> Medals { get; set; } = new List<MedalData>();
     public Guid? UserId { get; set; }
     public DraftData? Draft { get; set; }
+    public int Group { get; set; }
 
     public GetAthleteResponse(Athlete athlete)
     {
@@ -25,5 +26,6 @@ public class GetAthleteResponse
         Description = athlete.Description;
         Discipline = athlete.Discipline;
         UserId = athlete.UserId;
+        Group = athlete.Group;
     }
 }

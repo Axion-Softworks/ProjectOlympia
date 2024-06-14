@@ -12,4 +12,5 @@ public class AthleteData
     public required string Iso { get; set; }
     public required List<MedalData> Medals { get; set; } = new List<MedalData>();
     public Guid? UserId { get; set; }
+    public required int Group { get; set; }
 }

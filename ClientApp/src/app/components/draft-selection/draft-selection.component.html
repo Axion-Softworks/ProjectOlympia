@@ -29,7 +29,7 @@
     }
 
     @if (inProgressDrafts.length > 0) {
-        <h2 class="pt-12">Active Drafts</h2>
+        <h2 class="pt-12">In-Progress Drafts</h2>
         <table *ngIf="!loadingDrafts && inProgressDrafts.length > 0" mat-table [dataSource]="inProgressDrafts" class="grey-background">
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef class="draft-headers white-text">Draft</th>

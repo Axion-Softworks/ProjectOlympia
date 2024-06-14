@@ -149,7 +149,7 @@ public class DraftController : ControllerBase
         _context.Update(draft);
         await _context.SaveChangesAsync();
 
-        if (status == EDraftStatus.InProgress)
+        if (status == EDraftStatus.IndividualDraft)
             await this._websocketService.SendDraftStartedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList());
 
         return Ok();
