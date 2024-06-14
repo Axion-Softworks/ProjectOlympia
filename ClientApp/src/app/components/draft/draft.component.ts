@@ -22,6 +22,8 @@ import { DraftedUserData } from 'src/app/models/drafted-user-data';
 import { User } from 'src/app/models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../generic-confirm-dialog/generic-confirm-dialog.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { OutOfSyncDialogComponent } from './out-of-sync-dialog/out-of-sync-dialog.component';
 
 @Component({
   selector: 'draft',
@@ -232,7 +234,15 @@ export class DraftComponent implements OnDestroy {
         this.currentRound = this.calculateCurrentRound();
         this.currentRoundPick = this.calculateCurrentRoundPick();
         this.calculateCurrentTurnUser();
-      });
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status == 400 && error.error == "out_of_sync") {
+          this.dialog.open(OutOfSyncDialogComponent, {
+            disableClose: true
+          });
+        }
+      }
+    );
   }
 
   athleteIsDrafted(athlete: Athlete): boolean {

@@ -75,6 +75,9 @@ namespace ProjectOlympia
                byte[] bytes = Encoding.Default.GetBytes(messageJson);
                var arraySegment = new ArraySegment<byte>(bytes);
 
+               if (connection.WebSocket.State != WebSocketState.Open)
+                return;
+
                 await connection.WebSocket.SendAsync(
                     arraySegment,
                     WebSocketMessageType.Text,

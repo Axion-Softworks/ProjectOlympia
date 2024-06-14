@@ -89,6 +89,9 @@ public class AthleteController : ControllerBase
         if (athlete == null || user == null)
             return NotFound();
 
+        if (athlete.UserId != null) //athlete already drafted, user f-e out of sync
+            return BadRequest("out_of_sync");
+
         athlete.User = user;
         athlete.UserId = user.Id;
 

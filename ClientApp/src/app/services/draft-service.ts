@@ -26,11 +26,11 @@ export class DraftService {
   public draftAthlete(userId: string, athleteId: string): Promise<Athlete> {
     let request: DraftAthleteRequest = { userId: userId, id: athleteId }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.http.put<Athlete>(this.baseUrl + 'api/athlete/assign', request)
       .subscribe({
         next: (result) => { resolve(result) }, 
-        error: (e) => console.error(e)
+        error: (e) => { console.error(e); reject(e) }
       });
     })
   }

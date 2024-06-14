@@ -6,6 +6,7 @@ import { AthleteDraftedResponse } from "../models/web-socket/athlete-drafted-res
 import { Subject } from "rxjs";
 import { DraftStartedResponse } from "../models/web-socket/draft-started-response";
 import { DraftRandomisedResponse } from "../models/web-socket/draft-randomised-response";
+import { UserService } from "./user.service";
 
 @Injectable({
     providedIn: "root"
@@ -27,8 +28,13 @@ export class WebSocketService {
     public readonly onDraftRandomised: Subject<DraftRandomisedResponse> = new Subject();
 
     constructor(
-        @Inject("BASE_URL") baseUrl: string
+        @Inject("BASE_URL") baseUrl: string,
+        private userService: UserService
     ) {
+        this.userService.onLoggedIn.subscribe({
+            next: (id: string) => { this.authenticate(id) }
+        })
+
         this.webSocket = new WebSocket(baseUrl + "ws");
 
         this.webSocket.onerror = (ev: Event) => {
@@ -51,6 +57,8 @@ export class WebSocketService {
             userId: userId,
             operation: EWebSocketOperation.Auth
         };
+
+        console.log("Web Socket auth")
 
         this.send(message);
     }

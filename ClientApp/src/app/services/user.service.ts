@@ -3,29 +3,33 @@ import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { DraftSummary } from '../models/draft-summary';
-import { WebSocketService } from './web-socket.service';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  public onLoggedIn: Subject<string> = new Subject();
+
   public user?: User;
 
   constructor(
     private http: HttpClient,
-    private webSocketService: WebSocketService,
     private router: Router,
     @Inject('BASE_URL') private baseUrl: string
-  ) { }
+  ) {
+    if (this.loggedIn())
+      setTimeout(() => this.onLoggedIn.next(this.getId()), 200);
+  }
 
   public login(formgroup: FormGroup): void {
     this.http.post<User>(this.baseUrl + 'api/login', formgroup.value).subscribe({
       next: (result) => {
         this.user = result; sessionStorage.setItem('user', JSON.stringify(result));
 
-        this.webSocketService.authenticate(this.user.id);
+        this.onLoggedIn.next(result.id); //triggers ws auth
         this.router.navigate(["home"]);
       },
       error: (e) => console.error(e)
