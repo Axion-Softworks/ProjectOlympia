@@ -94,7 +94,8 @@ public class DraftController : ControllerBase
     {
         var draft = this._mapper.Map<Draft>(request);
         draft.Id = Guid.NewGuid();
-        draft.Users = _context.Users.Where(w => request.UserIds.Contains(w.Id)).ToList();        
+        draft.Users = _context.Users.Where(w => request.UserIds.Contains(w.Id)).ToList();      
+        draft.DraftOrder = "";  
 
         _context.Add(draft);
         await _context.SaveChangesAsync();
