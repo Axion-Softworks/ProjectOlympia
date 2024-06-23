@@ -12,7 +12,7 @@
       </div>
     }
 
-    <div class="sort-buttons">
+    <div *ngIf="draftIsInProgress() && !individualDraftComplete" class="sort-buttons">
       <mat-button-toggle-group name="athleteSort" aria-label="Sort Athletes" (change)="sortAthletes($event.value)" value="country" vertical="true">
         <mat-button-toggle class="sort-button" value="country">Country</mat-button-toggle>
         <mat-button-toggle class="sort-button" value="discipline">Discipline</mat-button-toggle>
