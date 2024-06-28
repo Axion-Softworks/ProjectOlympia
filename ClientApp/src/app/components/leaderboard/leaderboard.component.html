@@ -1,1 +1,30 @@
-<p>leaderboard works!</p>
+@if (leaderboardData.length < 1) {
+    <mat-spinner class="loading-spinner"></mat-spinner>
+}
+@else {
+    <table mat-table [dataSource]="leaderboardData" class="grey-background">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Name</th>
+            <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="bronze">
+            <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Bronze</th>
+            <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.bronze}}</td>
+        </ng-container>
+        <ng-container matColumnDef="silver">
+            <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Silver</th>
+            <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.silver}}</td>
+        </ng-container>
+        <ng-container matColumnDef="gold">
+            <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Gold</th>
+            <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.gold}}</td>
+        </ng-container>
+        <ng-container matColumnDef="points">
+            <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Points</th>
+            <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.points}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+}

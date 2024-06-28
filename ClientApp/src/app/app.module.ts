@@ -25,7 +25,7 @@ import { LeaderboardComponent } from './components/leaderboard/leaderboard.compo
       { path: '', component: LoginComponent, pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       { path: 'draft/:id', component: DraftComponent },
-      { path: 'leaderboard/:id ', component: LeaderboardComponent }
+      { path: 'leaderboard/:id', component: LeaderboardComponent }
     ])
   ],
   providers: [
