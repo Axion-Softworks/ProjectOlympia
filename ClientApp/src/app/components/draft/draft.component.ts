@@ -7,7 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatExpansionModule } from '@angular/material/expansion'; 
 import { UserPanelComponent } from '../user-panel/user-panel.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DraftService } from 'src/app/services/draft-service';
 import { Draft } from 'src/app/models/draft';
 import { MatButtonModule } from '@angular/material/button';
@@ -79,6 +79,7 @@ export class DraftComponent implements OnDestroy {
   public rowHeight = "1:1";
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
     private userService: UserService,
@@ -163,6 +164,8 @@ export class DraftComponent implements OnDestroy {
 
             case EDraftStatus.closed:
               this.snackBar.open("Drafting is complete!", "END", { duration: 5000 });
+
+              this.router.navigate(["/leaderboard", this.draft.id])
               break;
           
             default:

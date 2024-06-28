@@ -48,6 +48,10 @@ export class DraftSelectionComponent {
     }
 
     openDraft(id: string): void {
-        this.router.navigate(['/draft', id])
+        this.router.navigate(['/draft', id]);
+    }
+
+    openLeaderboard(id: string): void {
+        this.router.navigate(['/leaderboard', id]);
     }
 }

@@ -10,6 +10,7 @@ import { HomeComponent } from './components/home/home.component';
 import { DraftComponent } from './components/draft/draft.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LoginComponent } from './components/login/login.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { LoginComponent } from './components/login/login.component';
       { path: '', component: LoginComponent, pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       { path: 'draft/:id', component: DraftComponent },
+      { path: 'leaderboard/:id ', component: LeaderboardComponent }
     ])
   ],
   providers: [
