@@ -1,6 +1,6 @@
 import { EDraftStatus } from "../e-draft-status";
 
-export interface DraftStartedResponse {
+export interface DraftStatusResponse {
     draftId: string;
     status: EDraftStatus;
 }

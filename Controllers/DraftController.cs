@@ -117,7 +117,7 @@ public class DraftController : ControllerBase
     [HttpPut("assign")]
     public async Task<IActionResult> AssignUsersToDraftAsync([FromBody] AssignUsersToDraftRequest request)
     {
-        var draft = _context.Drafts.Include(i => i.Users).FirstOrDefault(f => f.Id == request.Id);
+        var draft = _context.Drafts.Include(i => i.Athletes).Include(i => i.Users).FirstOrDefault(f => f.Id == request.Id);
 
         if (draft == null)
             return NotFound();
@@ -150,8 +150,7 @@ public class DraftController : ControllerBase
         _context.Update(draft);
         await _context.SaveChangesAsync();
 
-        if (status == EDraftStatus.IndividualDraft)
-            await this._websocketService.SendDraftStartedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList());
+        await this._websocketService.SendDraftStateChangedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList(), status);
 
         return Ok();
     }
@@ -173,6 +172,65 @@ public class DraftController : ControllerBase
         await _context.SaveChangesAsync();
 
         await this._websocketService.SendDraftRandomisedMessageAsync(draft.Id, draft.Users.Select(s => s.Id).ToList(), order);
+
+        return Ok();
+    }
+
+    [HttpPut("randomise-groups/{draftId}")]
+    public async Task<IActionResult> RandomiseAthleteGroupsByDraftIdAsync([FromRoute] Guid draftId)
+    {
+        var draft = _context.Drafts.Include(i => i.Athletes).Include(i => i.Users).FirstOrDefault(f => f.Id == draftId);
+
+        if (draft == null)
+            return NotFound();
+
+        Random rng = new Random();
+        var athleteList = draft.Athletes.Where(w => w.UserId == null).ToList();
+        var randomisedAthletes = athleteList.OrderBy(_ => rng.Next()).ToList();
+
+        var athleteGroupList = new List<AthleteGroup>();
+        var group = 0;
+
+        for (int i = 0; i < randomisedAthletes.Count; i++)
+        {
+            var athlete = randomisedAthletes[i];
+            athlete.Group = group;
+            _context.Update(athlete);
+            athleteGroupList.Add(new AthleteGroup { Id = athlete.Id, Group = athlete.Group });
+
+            if ((i + 1) % 5 == 0)
+                group++;
+        }
+
+        await _context.SaveChangesAsync();
+
+        await this._websocketService.SendGroupDraftRandomisedMessageAsync(draftId, draft.Users.Select(s => s.Id).ToList(), athleteGroupList);
+
+        return Ok();
+    }
+
+    [HttpPut("assign-group")]
+    public async Task<IActionResult> DraftAthleteGroupToUserAsync([FromBody] DraftAthleteGroupRequest request)
+    {
+        var draft = _context.Drafts.Include(i => i.Users).Include(i => i.Athletes).FirstOrDefault(f => f.Id == request.DraftId);
+
+        if (draft == null)
+            return NotFound();
+
+        var athletes = draft.Athletes.Where(w => w.Group == request.Group).ToList();
+
+        if (athletes.Any(a => a.UserId != null))
+            return BadRequest("out_of_sync");
+
+        foreach (var athlete in athletes)
+        {
+            athlete.UserId = request.UserId;
+            _context.Update(athlete);
+        }
+
+        await _context.SaveChangesAsync();
+
+        await this._websocketService.SendAthleteGroupDraftedMessageAsync(request.UserId, draft.Users.Where(w => w.Id != request.UserId).Select(s => s.Id).ToList(), request.Group);
 
         return Ok();
     }

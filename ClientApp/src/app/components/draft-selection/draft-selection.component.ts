@@ -37,7 +37,7 @@ export class DraftSelectionComponent {
         this.draftService.getDraftSummariesByUserId(this.userService.getId())
             .then((result: DraftSummary[]) => {
                 this.openDrafts = result.filter(f => f.status == EDraftStatus.notStarted);
-                this.inProgressDrafts = result.filter(f => f.status == EDraftStatus.individualDraft || f.status == EDraftStatus.groupDraft);
+                this.inProgressDrafts = result.filter(f => f.status >= EDraftStatus.individualDraft && f.status <= EDraftStatus.groupDraft);
                 this.closedDrafts = result.filter(f => f.status == EDraftStatus.closed);
                 this.loadingDrafts = false;
             });

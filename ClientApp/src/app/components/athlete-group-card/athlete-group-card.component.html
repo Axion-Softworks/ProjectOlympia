@@ -1,0 +1,19 @@
+<mat-card [class.athlete-card]="!isDisabled()" [class.athlete-card-disabled]="isDisabled()" (click)="onCardClick()">
+    <div *ngIf="draftGroup == undefined">
+        <div>Loading...</div>
+        <mat-spinner class="spinner"></mat-spinner>
+    </div>
+    <div class="white-text pb-12 pl-12 pt-12">
+        Group {{draftGroup.group + 1}}
+    </div>
+    @for (athlete of draftGroup.athletes; track athlete) {
+        <div class="athlete-details-container">
+            <div class="country-name">
+            <div matTooltip="{{athlete.country}}" matTooltipPosition="left" class="country">
+                <span class="fi fi-{{athlete.iso}}"></span>
+            </div>          
+            <div matTooltip="{{athlete.discipline}}: {{athlete.description}}" matTooltipPosition="right">{{athlete.surname}}</div>
+            </div>
+        </div>
+    }
+</mat-card>

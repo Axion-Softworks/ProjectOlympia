@@ -11,7 +11,7 @@ namespace ProjectOlympia
             this._webSocketHandler = webSocketHandler;
         }
 
-        public async Task SendAthleteAssignedMessageAsync(Guid userId, Guid athleteId, List<Guid> draftUserIds)
+        public async Task SendAthleteAssignedMessageAsync(Guid userId, List<Guid> draftUserIds, Guid athleteId)
         {
             var response = new AthleteDraftedResponse
             {
@@ -32,19 +32,19 @@ namespace ProjectOlympia
             await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
         }
 
-        public async Task SendDraftStartedMessageAsync(Guid draftId, List<Guid> draftUserIds)
+        public async Task SendDraftStateChangedMessageAsync(Guid draftId, List<Guid> draftUserIds, EDraftStatus status)
         {
-            var response = new DraftOpenedResponse
+            var response = new DraftStatusResponse
             {
                 DraftId = draftId,
-                Status = EDraftStatus.IndividualDraft
+                Status = status
             };
 
             string responseJson = JsonConvert.SerializeObject(response);
 
             var message = new WebSocketResponse
             {
-                Operation = EWebSocketOperation.DraftStarted,
+                Operation = EWebSocketOperation.StatusChanged,
                 Content = responseJson
             };
 
@@ -73,5 +73,48 @@ namespace ProjectOlympia
 
             await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
         }
+
+        public async Task SendGroupDraftRandomisedMessageAsync(Guid draftId, List<Guid> draftUserIds, List<AthleteGroup> athleteGroups)
+        {
+            var response = new GroupDraftRandomisedResponse
+            {
+                DraftId = draftId,
+                AthleteGroups = athleteGroups
+            };
+
+            string responseJson = JsonConvert.SerializeObject(response);
+
+            var message = new WebSocketResponse
+            {
+                Operation = EWebSocketOperation.GroupDraftRandomised,
+                Content = responseJson
+            };
+
+            string messageJson = JsonConvert.SerializeObject(message);
+
+            await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
+        }
+
+        public async Task SendAthleteGroupDraftedMessageAsync(Guid userId, List<Guid> draftUserIds, int group) 
+        {
+            var response = new AthleteGroupDraftedResponse
+            {
+                Group = group,
+                UserId = userId
+            };
+
+            string responseJson = JsonConvert.SerializeObject(response);
+
+            var message = new WebSocketResponse
+            {
+                Operation = EWebSocketOperation.AthleteGroupDrafted,
+                Content = responseJson
+            };
+
+            string messageJson = JsonConvert.SerializeObject(message);
+
+            await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
+        }
+
     }
 }
