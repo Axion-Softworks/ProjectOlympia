@@ -100,7 +100,7 @@ public class AthleteController : ControllerBase
 
         var userIds = athlete.Draft.Users.Where(x => x.Id != request.UserId).Select(x => x.Id).ToList();
 
-        await _webSocketService.SendAthleteAssignedMessageAsync(request.UserId, request.Id, userIds);
+        await _webSocketService.SendAthleteAssignedMessageAsync(request.UserId, userIds, request.Id);
 
         var response = new AssignAthleteResponse(athlete);
         response.User = _mapper.Map<UserData>(user);
@@ -121,34 +121,6 @@ public class AthleteController : ControllerBase
             athlete.User = null;
             athlete.UserId = null;        
             _context.Update(athlete);
-        }
-
-        await _context.SaveChangesAsync();
-
-        return Ok();
-    }
-
-    [HttpPut("randomise-groups/{draftId}")]
-    public async Task<IActionResult> RandomiseAthleteGroupsByDraftIdAsync([FromRoute] Guid draftId)
-    {
-        var athletes = _context.Athletes.Include(i => i.Draft).Where(w => w.Draft.Id == draftId && w.UserId == null);
-
-        if (athletes == null || athletes.Count() < 1)
-            return NotFound();
-
-        Random rng = new Random();
-        var athleteList = athletes.ToList();
-        var randomisedAthletes = athleteList.OrderBy(_ => rng.Next()).ToList();
-        var group = 0;
-
-        for (int i = 0; i < randomisedAthletes.Count; i++)
-        {
-            var athlete = randomisedAthletes[i];
-            athlete.Group = group;
-            _context.Update(athlete);
-
-            if ((i + 1) % 5 == 0)
-                group++;
         }
 
         await _context.SaveChangesAsync();

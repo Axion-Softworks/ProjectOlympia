@@ -7,7 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatExpansionModule } from '@angular/material/expansion'; 
 import { UserPanelComponent } from '../user-panel/user-panel.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DraftService } from 'src/app/services/draft-service';
 import { Draft } from 'src/app/models/draft';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +24,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../generic-confirm-dialog/generic-confirm-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OutOfSyncDialogComponent } from './out-of-sync-dialog/out-of-sync-dialog.component';
+import { GroupDraftRandomisedResponse } from 'src/app/models/web-socket/group-draft-randomised-response';
+import { DraftGroup } from 'src/app/models/draft-group';
+import { AthleteGroupCardComponent } from '../athlete-group-card/athlete-group-card.component';
+import { AthleteGroupDraftedResponse } from 'src/app/models/web-socket/athlete-group-drafted-response';
+import { DraftStatusResponse } from 'src/app/models/web-socket/draft-status-response';
 
 @Component({
   selector: 'draft',
@@ -43,6 +48,7 @@ import { OutOfSyncDialogComponent } from './out-of-sync-dialog/out-of-sync-dialo
     MatSnackBarModule,
 
     AthleteCardComponent,
+    AthleteGroupCardComponent,
     UserPanelComponent
   ]
 })
@@ -66,19 +72,14 @@ export class DraftComponent implements OnDestroy {
   public totalRounds: number = 0;
   public currentTurnUser?: User;
   public orderedUsers: User[] = [];
-  private _picksRemaining: number = 0
-  public get picksRemaining(): number { return this._picksRemaining };
-  public set picksRemaining(value: number) { 
-    this._picksRemaining = value;
-    if (value == 0)
-      this.individualDraftComplete = true;
-   }
+  public picksRemaining: number = 0;
 
-  public individualDraftComplete: boolean = false; 
+  public draftGroups: DraftGroup[] = [];
 
   public rowHeight = "1:1";
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
     private userService: UserService,
@@ -108,6 +109,12 @@ export class DraftComponent implements OnDestroy {
           }
 
           this.calculateDraftData();
+
+          if (this.draft.status == EDraftStatus.groupDraft) {
+            this.sortDraftGroups()
+            this.calculateGroupDraftData()
+          }
+            
         });
     }
 
@@ -122,22 +129,51 @@ export class DraftComponent implements OnDestroy {
         user?.athletes.push(athlete);
 
         athlete.userId = response.userId;
-        this.snackBar.open(`${user?.username} drafted ${athlete.forename} ${athlete.surname}`, "DRAFTED", { duration: 2000 });
+        this.snackBar.open(`${user?.username} drafted ${athlete.forename} ${athlete.surname}`, "DRAFTED", { duration: 5000 });
 
         this.calculateDraftData();
       }
     });
 
-    this.webSocketService.onDraftStarted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
-      next: (response) => {
+    this.webSocketService.onDraftStatusChanged.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response: DraftStatusResponse) => {
+        //console.log("Status change", response)
         if (this.draft && this.draft.id == response.draftId) {
           this.draft.status = response.status;
-          this.snackBar.open("The draft has begun!", "START", { duration: 2000 })
 
-          this.calculateDraftData();
+          switch (response.status) {
+            case EDraftStatus.individualDraft:
+              this.snackBar.open("The draft has begun!", "START", { duration: 5000 })
+              
+              this.calculateDraftData();
+              break;
+
+            case EDraftStatus.intermediate:
+              this.snackBar.open("The first stage draft is complete!", "STANDBY", { duration: 5000 })
+              break;
+
+            case EDraftStatus.groupDraft:
+              this.snackBar.open("The group draft has begun!", "START", { duration: 5000 })
+
+              if (this.draftGroups.length < 1) {
+                this.sortDraftGroups();
+              }
+
+              this.calculateGroupDraftData();
+              break;
+
+            case EDraftStatus.closed:
+              this.snackBar.open("Drafting is complete!", "END", { duration: 5000 });
+
+              this.router.navigate(["/leaderboard", this.draft.id])
+              break;
+          
+            default:
+              break;
+          }
         }
       }
-    })
+    });
 
     this.webSocketService.onDraftRandomised.pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (response) => {
@@ -154,10 +190,51 @@ export class DraftComponent implements OnDestroy {
               this.orderedUsers.push(user);
           });
 
-          this.snackBar.open("The draft order has been randomised!", "RANDOM", { duration: 2000 })
+          this.snackBar.open("The draft order has been randomised!", "RANDOM", { duration: 5000 })
         }
       }
-    })
+    });
+
+    this.webSocketService.onGroupDraftRandomised.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response: GroupDraftRandomisedResponse) => {
+        if (this.draft && this.draft.id == response.draftId) {
+
+          response.athleteGroups.forEach(athGroup => {
+            var athlete = this.draft?.athletes.find(f => f.id == athGroup.id);
+          
+            if (athlete != undefined)
+              athlete.group = athGroup.group;      
+          });
+
+          this.sortDraftGroups();
+
+          this.snackBar.open("The group draft order has been randomised!", "RANDOM", { duration: 5000 })
+        }
+      }
+    });
+
+    this.webSocketService.onAthleteGroupDrafted.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (response: AthleteGroupDraftedResponse) => {
+        var user = this.draft?.users.find(x => x.id === response.userId);
+        var draftGroup = this.draftGroups.find(f => f.group == response.group);
+
+        if (!draftGroup || !user)
+          return;
+
+        draftGroup.athletes.forEach(athlete => {
+          athlete.userId = response.userId;
+          var draftAth = this.draft?.athletes.find(f => f.id == athlete.id);
+          if (!!draftAth) {
+            draftAth.userId = response.userId;
+            user?.athletes.push(draftAth);
+          }
+        });
+
+        this.snackBar.open(`${user?.username} drafted Group ${response.group + 1}`, "DRAFTED", { duration: 5000 });
+
+        this.calculateGroupDraftData();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -227,7 +304,7 @@ export class DraftComponent implements OnDestroy {
   }
 
   onDraftPickEmitted(athlete: Athlete): void {
-    if (!this.draft?.users)
+    if (!this.draft || !this.draft.users)
         return;
 
     var userIndex = this.getCurrentUserIndex();
@@ -239,6 +316,13 @@ export class DraftComponent implements OnDestroy {
         user.athletes.push(athlete);
         athlete.userId = user.id;
         this.calculatePicksRemaining();
+        if (this.picksRemaining == 0) {
+          if (!!this.draft)
+            this.draftService.setDraftStatus(this.draft?.id, EDraftStatus.intermediate);
+
+          return;
+        }
+
         this.currentRound = this.calculateCurrentRound();
         this.currentRoundPick = this.calculateCurrentRoundPick();
         this.calculateCurrentTurnUser();
@@ -281,8 +365,16 @@ export class DraftComponent implements OnDestroy {
     return this.draft?.status == EDraftStatus.notStarted;
   }
 
-  draftIsInProgress(): boolean {
-    return this.draft?.status == EDraftStatus.individualDraft && !this.individualDraftComplete;
+  individualDraftIsInProgress(): boolean {
+    return this.draft?.status == EDraftStatus.individualDraft;
+  }
+
+  draftIsInIntermediateState(): boolean {
+    return this.draft?.status == EDraftStatus.intermediate;
+  }
+
+  groupDraftIsInProgress(): boolean {
+    return this.draft?.status == EDraftStatus.groupDraft;
   }
 
   getDraftedUserData(userId: string): DraftedUserData | null {
@@ -301,6 +393,10 @@ export class DraftComponent implements OnDestroy {
 
   enableStartDraftButton(): boolean {
     return !!this.draft && this.orderedUsers.length > 0 && this.draftIsNotStarted();
+  }
+
+  groupDraftIsSetup(): boolean {
+    return !!this.draft && this.draft.athletes.filter(f => f.group == -1 && !f.userId).length == 0;
   }
 
   randomiseDraft(): void {
@@ -380,7 +476,118 @@ export class DraftComponent implements OnDestroy {
     return this.userService.getId() == this.currentTurnUser?.id;
   }
 
-  startGroupDraft() {
+  randomiseGroupDraft() {
+    if (this.draft)
+      this.draftService.randomiseGroupDraft(this.draft.id);
+  }
 
+  startGroupDraft() {
+    if (this.draft)
+      this.draftService.setDraftStatus(this.draft.id, EDraftStatus.groupDraft);
+  }
+
+  calculateGroupDraftData() {
+    this.calculateGroupPicksRemaining();
+    this.totalRounds = this.calculateTotalGroupRounds();
+    this.currentRound = this.calculateCurrentGroupRound();
+    this.currentRoundPick = this.calculateCurrentGroupRoundPick();
+    this.calculateCurrentTurnUser();
+  }
+
+  calculateGroupPicksRemaining() {
+    if (this.draft)
+      this.picksRemaining = this.draft.athletes.filter(f => f.userId == null).length / this.draft.athletes.filter(f => f.group == 0).length;
+  }
+
+  calculateCurrentGroupRoundPick() : number {
+    if (!this.draft)
+        return 0;
+
+    var groupSize = this.draft.athletes.filter(f => f.group == 0).length;
+    var currentPick = ((this.draft.athletes.length / 2) / groupSize - this.picksRemaining);
+
+    var roundPick = (currentPick % this.draft.users.length);
+
+    return roundPick;
+  }
+
+  calculateCurrentGroupRound() : number {
+    if (!this.draft)
+      return 0;
+
+    const snakeLength = this.draft.users.length;
+    const groupSize = this.draft.athletes.filter(f => f.group == 0).length;
+
+    var picksTaken = ((this.draft.athletes.filter(f => f.userId != null).length - (this.draft.athletes.length / 2)) / groupSize) + 1;
+    var round = Math.ceil(picksTaken/snakeLength);
+
+    return round % 1 == 0 ? round : round + 1;
+  }
+
+  calculateTotalGroupRounds() : number {
+    if (!this.draft)
+      return 0;
+
+    var snakeLength = this.draft.users.length;
+    var groupSize = this.draft.athletes.filter(f => f.group == 0).length;
+    var totalPicks = (this.draft.athletes.length / 2) / groupSize;
+    var rounds = totalPicks/snakeLength;
+
+    return Math.ceil(rounds);
+  }
+
+  sortDraftGroups() {
+    if (!this.draft)
+      return;
+
+    var groupedAthletes = this.draft.athletes.filter(f => f.group > -1);
+
+    for (let index = 0; index < groupedAthletes.length; index++) {
+      const athlete = groupedAthletes[index];
+      var draftGroup = this.draftGroups.find(f => f.group == athlete.group);
+      if (draftGroup == undefined)
+        this.draftGroups.push({ group: athlete.group, athletes: [athlete] });
+      else
+        draftGroup.athletes.push(athlete);
+    }
+
+    this.draftGroups.sort((a, b) => a.group - b.group);
+  }
+
+  onGroupDraftPickEmitted(draftGroup: DraftGroup): void {
+    if (!this.draft?.users)
+        return;
+
+    var userIndex = this.getCurrentUserIndex();
+
+    var user = this.draft.users[userIndex];
+    
+    this.draftService.draftAthleteGroup(user.id, this.draft.id, draftGroup.group)
+      .then(() => {
+        draftGroup.athletes.forEach(athlete => {
+          user.athletes.push(athlete);
+          athlete.userId = user.id;
+        });
+        
+        this.calculateGroupPicksRemaining();
+        if (this.picksRemaining == 0) {
+          if (!!this.draft)
+            this.draftService.setDraftStatus(this.draft?.id, EDraftStatus.closed);
+
+          return;
+        }
+
+        this.currentRound = this.calculateCurrentGroupRound();
+        this.currentRoundPick = this.calculateCurrentGroupRoundPick();
+        this.calculateCurrentTurnUser();
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status == 400 && error.error == "out_of_sync") {
+          this.dialog.open(OutOfSyncDialogComponent, {
+            disableClose: true
+          });
+        }
+      }
+    );
   }
 }

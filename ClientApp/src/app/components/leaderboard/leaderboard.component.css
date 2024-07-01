@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.loading-spinner {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+}
+
+.white-text {
+  color: rgb(209, 205, 199) !important;
+}
+
+.grey-background {
+  background-color:  #373d43 !important; 
+}
+
+.leaderboard-headers {
+  font-size: medium;
+}
+
+.leaderboard-values {
+  font-size: x-large;
+}

@@ -4,9 +4,11 @@ import { EWebSocketOperation } from "../models/web-socket/e-web-socket-operation
 import { WebSocketResponse } from "../models/web-socket/web-socket-response";
 import { AthleteDraftedResponse } from "../models/web-socket/athlete-drafted-response";
 import { Subject } from "rxjs";
-import { DraftStartedResponse } from "../models/web-socket/draft-started-response";
+import { DraftStatusResponse } from "../models/web-socket/draft-status-response";
 import { DraftRandomisedResponse } from "../models/web-socket/draft-randomised-response";
 import { UserService } from "./user.service";
+import { GroupDraftRandomisedResponse } from "../models/web-socket/group-draft-randomised-response";
+import { AthleteGroupDraftedResponse } from "../models/web-socket/athlete-group-drafted-response";
 
 @Injectable({
     providedIn: "root"
@@ -24,8 +26,10 @@ export class WebSocketService {
     }
 
     public readonly onAthleteDrafted: Subject<AthleteDraftedResponse> = new Subject();
-    public readonly onDraftStarted: Subject<DraftStartedResponse> = new Subject();
+    public readonly onDraftStatusChanged: Subject<DraftStatusResponse> = new Subject();
     public readonly onDraftRandomised: Subject<DraftRandomisedResponse> = new Subject();
+    public readonly onGroupDraftRandomised: Subject<GroupDraftRandomisedResponse> = new Subject();   
+    public readonly onAthleteGroupDrafted: Subject<AthleteGroupDraftedResponse> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string,
@@ -92,16 +96,28 @@ export class WebSocketService {
 
                 break;
         
-            case EWebSocketOperation.DraftStarted:
-                const draftStartedResponse: DraftStartedResponse = JSON.parse(response.content);
+            case EWebSocketOperation.StatusChanged:
+                const draftStatusResponse: DraftStatusResponse = JSON.parse(response.content);
 
-                this.onDraftStarted.next(draftStartedResponse);
+                this.onDraftStatusChanged.next(draftStatusResponse);
                 break;
 
             case EWebSocketOperation.DraftRandomised:
                 const draftRandomisedResponse: DraftRandomisedResponse = JSON.parse(response.content);
 
                 this.onDraftRandomised.next(draftRandomisedResponse);
+                break;
+
+            case EWebSocketOperation.GroupDraftRandomised:
+                const groupDraftRandomisedResponse: GroupDraftRandomisedResponse = JSON.parse(response.content);
+
+                this.onGroupDraftRandomised.next(groupDraftRandomisedResponse);
+                break;
+
+            case EWebSocketOperation.AthleteGroupDrafted:
+                const athleteGroupDraftedResponse: AthleteGroupDraftedResponse = JSON.parse(response.content);
+
+                this.onAthleteGroupDrafted.next(athleteGroupDraftedResponse);
                 break;
 
             default:

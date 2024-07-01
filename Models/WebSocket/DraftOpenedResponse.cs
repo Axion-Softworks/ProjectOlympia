@@ -1,6 +1,6 @@
 namespace ProjectOlympia
 {
-    public class DraftOpenedResponse
+    public class DraftStatusResponse
     {
         public Guid DraftId { get; set; }
         public EDraftStatus Status { get; set; }
