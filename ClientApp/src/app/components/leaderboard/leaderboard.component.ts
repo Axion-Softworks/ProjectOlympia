@@ -81,6 +81,8 @@ export class LeaderboardComponent {
 
                 let datum: AthleteLeaderboardData = {
                     athleteId: athlete.id,
+                    country: athlete.country,
+                    iso: athlete.iso,
                     name: `${athlete.forename} ${athlete.surname}`,
                     bronze: bronzeValue,
                     silver: silverValue,
@@ -109,7 +111,7 @@ export class LeaderboardComponent {
     showDetails(leaderboardData: LeaderboardData) {
         const dialogRef = this.dialog.open(LeaderboardAthleteSummaryDialogComponent, {
             data: { athleteData: leaderboardData.athleteLeaderboardData, name: leaderboardData.name },
-            maxWidth: '500px',
+            maxWidth: '600px',
             minWidth: '400px'
         })
     }

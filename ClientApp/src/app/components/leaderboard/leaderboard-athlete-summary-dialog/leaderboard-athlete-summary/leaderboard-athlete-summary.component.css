@@ -13,3 +13,9 @@
 .leaderboard-values {
   font-size: medium;
 }
+
+.country-name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

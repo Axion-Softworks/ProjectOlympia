@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteLeaderboardData } from 'src/app/models/athlete-leaderboard-data';
 
 @Component({
@@ -9,7 +10,8 @@ import { AthleteLeaderboardData } from 'src/app/models/athlete-leaderboard-data'
     imports: [
         CommonModule,
 
-        MatTableModule
+        MatTableModule,
+        MatTooltipModule
     ],
     templateUrl: './leaderboard-athlete-summary.component.html',
     styleUrl: './leaderboard-athlete-summary.component.css',

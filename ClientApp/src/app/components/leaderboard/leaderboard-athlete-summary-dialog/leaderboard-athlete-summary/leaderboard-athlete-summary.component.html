@@ -1,7 +1,16 @@
 <table mat-table [dataSource]="athleteData" class="grey-background">
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Name</th>
-        <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">{{datum.name}}</td>
+        <td mat-cell *matCellDef="let datum" class="leaderboard-values white-text">
+            <div class="country-name">
+                <div matTooltip="{{datum.country}}" matTooltipPosition="left" class="country">
+                    <span class="fi fi-{{datum.iso}}"></span>
+                </div>  
+                <div class="ml-12">
+                    {{datum.name}}
+                </div>
+            </div>
+        </td>
     </ng-container>
     <ng-container matColumnDef="bronze">
         <th mat-header-cell *matHeaderCellDef class="leaderboard-headers white-text">Bronze</th>
