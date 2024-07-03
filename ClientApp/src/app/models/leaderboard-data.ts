@@ -1,3 +1,5 @@
+import { AthleteLeaderboardData } from "./athlete-leaderboard-data";
+
 export interface LeaderboardData {
     userId: string;
     name: string;
@@ -6,4 +8,5 @@ export interface LeaderboardData {
     gold: number;
     points: number;
     hexColour: string;
+    athleteLeaderboardData: AthleteLeaderboardData[];
 }

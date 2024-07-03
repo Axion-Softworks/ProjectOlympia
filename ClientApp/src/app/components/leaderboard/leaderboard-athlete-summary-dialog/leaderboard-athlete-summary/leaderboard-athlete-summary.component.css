@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.white-text {
+  color: rgb(209, 205, 199) !important;
+}
+
+.grey-background {
+  background-color:  #373d43 !important; 
+}
+
+.leaderboard-values {
+  font-size: medium;
+}
