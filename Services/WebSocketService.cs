@@ -116,5 +116,20 @@ namespace ProjectOlympia
             await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
         }
 
+        public async Task SendMedalsManagedMessageAsync(Guid draftId, List<Guid> draftUserIds, ManageMedalsRequest data) 
+        {
+            string responseJson = JsonConvert.SerializeObject(data);
+
+            var message = new WebSocketResponse
+            {
+                Operation = EWebSocketOperation.MedalsManaged,
+                Content = responseJson
+            };
+
+            string messageJson = JsonConvert.SerializeObject(message);
+
+            await this._webSocketHandler.SendMessageToUsersAsync(messageJson, draftUserIds);
+        }
+
     }
 }

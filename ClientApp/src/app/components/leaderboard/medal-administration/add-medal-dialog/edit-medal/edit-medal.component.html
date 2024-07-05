@@ -1,0 +1,15 @@
+<form class="medal-form" [formGroup]="formgroup" (ngSubmit)="null">
+    <mat-form-field class="mr-12">
+      <mat-label>Event</mat-label>
+      <input matInput formControlName="event">
+    </mat-form-field>
+  
+    <mat-form-field>
+        <mat-label>Place</mat-label>
+        <mat-select formControlName="place">
+            <mat-option [value]="0">Bronze</mat-option>
+            <mat-option [value]="1">Silver</mat-option>
+            <mat-option [value]="2">Gold</mat-option>            
+        </mat-select>
+      </mat-form-field>
+</form>

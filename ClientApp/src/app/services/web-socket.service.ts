@@ -9,6 +9,7 @@ import { DraftRandomisedResponse } from "../models/web-socket/draft-randomised-r
 import { UserService } from "./user.service";
 import { GroupDraftRandomisedResponse } from "../models/web-socket/group-draft-randomised-response";
 import { AthleteGroupDraftedResponse } from "../models/web-socket/athlete-group-drafted-response";
+import { AthleteMedalData } from "../models/athlete-medal-data";
 
 @Injectable({
     providedIn: "root"
@@ -30,6 +31,7 @@ export class WebSocketService {
     public readonly onDraftRandomised: Subject<DraftRandomisedResponse> = new Subject();
     public readonly onGroupDraftRandomised: Subject<GroupDraftRandomisedResponse> = new Subject();   
     public readonly onAthleteGroupDrafted: Subject<AthleteGroupDraftedResponse> = new Subject();
+    public readonly onMedalsManaged: Subject<AthleteMedalData> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string,
@@ -118,6 +120,12 @@ export class WebSocketService {
                 const athleteGroupDraftedResponse: AthleteGroupDraftedResponse = JSON.parse(response.content);
 
                 this.onAthleteGroupDrafted.next(athleteGroupDraftedResponse);
+                break;
+
+            case EWebSocketOperation.MedalsManaged:
+                const medalsManagedResponse: AthleteMedalData = JSON.parse(response.content);
+
+                this.onMedalsManaged.next(medalsManagedResponse);
                 break;
 
             default:

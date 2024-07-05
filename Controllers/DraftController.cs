@@ -89,6 +89,29 @@ public class DraftController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("{id}/leaderboard")]
+    public IActionResult GetDraftWithMedals(Guid id)
+    {
+        var draft = _context.Drafts.Include(i => i.Users).Include(i => i.Athletes).ThenInclude(i => i.Medals).FirstOrDefault(x => x.Id == id);
+
+        if (draft == null)
+            return NotFound();
+
+        var response = new GetDraftResponse(draft);
+
+        foreach (var user in draft.Users)
+        {
+            response.Users.Add(_mapper.Map<UserData>(user));
+        }
+
+        foreach (var athlete in draft.Athletes)
+        {
+            response.Athletes.Add(_mapper.Map<AthleteData>(athlete));
+        }
+
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddDraftAsync([FromBody] AddDraftRequest request)
     {

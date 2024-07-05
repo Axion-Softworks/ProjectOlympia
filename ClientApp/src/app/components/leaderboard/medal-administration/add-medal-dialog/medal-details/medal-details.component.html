@@ -1,0 +1,17 @@
+@if (athleteMedalData.medals.length < 1) {
+    <div class="white-text">No Medals Awarded</div>
+}
+@else {
+    @for (medal of athleteMedalData.medals; track medal) {
+        <edit-medal [medal]="medal" (medalEmitter)="onMedalEmitted($event)"></edit-medal>
+    }
+}
+
+<div class="button-group">
+    <button class="white-text button-affirmative" mat-raised-button (click)="onAddMedalButtonClick()">Add Medal</button>
+    @if (updatedAthleteMedalData.medals.length > 0 && medalDataValid() && dataChanged) {
+        <button class="white-text button-affirmative" mat-raised-button (click)="onSaveChangesButtonClick()">Save Changes</button>
+    } @else {
+        <button class="white-text button-disabled" mat-raised-button disabled>Save Changes</button>
+    }
+</div>

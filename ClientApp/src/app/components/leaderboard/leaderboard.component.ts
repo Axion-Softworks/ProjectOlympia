@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -14,6 +14,13 @@ import { LeaderboardAthleteSummaryComponent } from './leaderboard-athlete-summar
 import { MatDialog } from '@angular/material/dialog';
 import { LeaderboardAthleteSummaryDialogComponent } from './leaderboard-athlete-summary-dialog/leaderboard-athlete-summary-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { UserService } from 'src/app/services/user.service';
+import { MedalAdministrationComponent } from './medal-administration/medal-administration.component';
+import { Athlete } from 'src/app/models/athlete';
+import { WebSocketService } from 'src/app/services/web-socket.service';
+import { AthleteMedalData } from 'src/app/models/athlete-medal-data';
+import { Subject, takeUntil } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'leaderboard',
@@ -26,14 +33,17 @@ import { MatButtonModule } from '@angular/material/button';
         MatProgressSpinnerModule,
         MatButtonModule,
 
-        LeaderboardAthleteSummaryComponent
+        LeaderboardAthleteSummaryComponent,
+        MedalAdministrationComponent
     ],
     templateUrl: './leaderboard.component.html',
     styleUrl: './leaderboard.component.css',
     changeDetection: ChangeDetectionStrategy.Default,
 })
-export class LeaderboardComponent { 
+export class LeaderboardComponent implements OnDestroy { 
+    private _unsubscribeAll: Subject<any> = new Subject();
 
+    athletes: Athlete[] = [];
     users: User[] = [];
     leaderboardData: LeaderboardData[] = [];
 
@@ -42,13 +52,18 @@ export class LeaderboardComponent {
     constructor(
         private route: ActivatedRoute,
         private draftService: DraftService,
-        private dialog: MatDialog
+        private userService: UserService,
+        private websocketService: WebSocketService,
+        private dialog: MatDialog,
+        private snackBar: MatSnackBar
     ) {
         var draftId = this.route.snapshot.paramMap.get('id');
 
         if (!!draftId) {
-            this.draftService.getDraft(draftId)
+            this.draftService.getDraftWithMedals(draftId)
             .then((result: Draft) => {
+                this.athletes = result.athletes;
+
                 result.users.forEach(user => {
                     user.athletes = result.athletes.filter(f => f.userId == user.id);
                 });
@@ -59,6 +74,25 @@ export class LeaderboardComponent {
                 console.log(this.users, this.leaderboardData);
             });
         }
+
+        this.websocketService.onMedalsManaged.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+            next: (data: AthleteMedalData) => {
+                var athlete = this.athletes.find(f => f.id == data.athleteId);
+                
+                if (!athlete)
+                    return;
+
+                athlete.medals = data.medals;
+                this.updateAthleteScoreData(data);          
+                
+                this.snackBar.open(`Medals updated for ${athlete.forename} ${athlete.surname}`, "UPDATE", { duration: 5000 })  
+            }
+        })
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribeAll.next(null);
+        this._unsubscribeAll.complete();
     }
 
     processUsersToLeaderboardData() {
@@ -114,5 +148,25 @@ export class LeaderboardComponent {
             maxWidth: '600px',
             minWidth: '400px'
         })
+    }
+
+    isAdmin(): boolean {
+        return this.userService.isAdmin();
+    }
+
+    updateAthleteScoreData(data: AthleteMedalData) {
+        var user = this.users.find(f => f.athletes.findIndex(f => f.id == data.athleteId) > -1);
+
+        if (!user)
+            return;
+
+        var athlete = user.athletes.find(f => f.id == data.athleteId);
+
+        if (!athlete)
+            return;
+
+        athlete.medals = data.medals;
+
+        this.processUsersToLeaderboardData();
     }
 }

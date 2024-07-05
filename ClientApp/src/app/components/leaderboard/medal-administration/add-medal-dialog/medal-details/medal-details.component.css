@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.white-text {
+  color: rgb(209, 205, 199) !important;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}

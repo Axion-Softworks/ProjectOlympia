@@ -1,0 +1,23 @@
+<div class="confirm-dialog">
+    <h2 class="white-text" mat-dialog-title>Add Medal</h2>
+    <mat-dialog-content>
+        <form class="example-form">
+            <mat-form-field class="example-full-width">
+                <mat-label>Athlete</mat-label>
+                <input type="text" matInput [formControl]="athleteControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onAthleteSelected($event.option.value)">
+                    @for (athlete of filteredAthletes | async; track athlete) {
+                        <mat-option [value]="athlete">{{athlete.forename}} {{athlete.surname}}</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+
+        @if (selectedAthlete) {
+            <medal-details [athleteMedalData]="selectedAthlete" (savedChangesEmitter)="onSavedChangesEmitted($event)"></medal-details>       
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions class="button-group" >
+        <button class="white-text" mat-raised-button color="warn" [mat-dialog-close]="false">Close</button>
+    </mat-dialog-actions>
+</div>

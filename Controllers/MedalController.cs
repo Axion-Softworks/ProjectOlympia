@@ -11,12 +11,14 @@ public class MedalController : ControllerBase
     private readonly ILogger<MedalController> _logger;
     private readonly IMapper _mapper;
     private DraftingContext _context;
+    private IWebSocketService _websocketService;
 
-    public MedalController(ILogger<MedalController> logger, IMapper mapper, DraftingContext draftingContext)
+    public MedalController(ILogger<MedalController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketService webSocketService)
     {
         _logger = logger;
         _mapper = mapper;
         _context = draftingContext;
+        _websocketService = webSocketService;
     }
 
     [HttpGet]
@@ -96,6 +98,45 @@ public class MedalController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(medal);
+    }
+
+    [HttpPut("manage")]
+    public async Task<IActionResult> ManageMedalsByAthleteIdAsync([FromBody] ManageMedalsRequest request)
+    {
+        var athlete = _context.Athletes.Include(i => i.Medals).Include(i => i.Draft).ThenInclude(i => i.Users).FirstOrDefault(x => x.Id == request.AthleteId);
+        
+        if (athlete == null)
+            return NotFound();
+
+        foreach (var medalData in request.Medals)
+        {
+            var existingMedal = athlete.Medals.FirstOrDefault(x => x.Id == medalData.Id);
+
+            if (existingMedal == null)
+            {
+                var newMedal = new Medal() {
+                    Id = Guid.NewGuid(),
+                    Event = medalData.Event == null ? string.Empty : medalData.Event,
+                    Place = medalData.Place,
+                    Athlete = athlete
+                };
+
+                athlete.Medals.Add(newMedal);
+                _context.Add(newMedal);
+            }
+            else 
+            {
+                existingMedal.Event = medalData.Event == null ? string.Empty : medalData.Event;
+                existingMedal.Place = medalData.Place;
+                _context.Update(existingMedal);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        await this._websocketService.SendMedalsManagedMessageAsync(athlete.Draft.Id, athlete.Draft.Users.Select(s => s.Id).ToList(), request);
+
+        return Ok();
     }
 
     [HttpDelete("{id}")]

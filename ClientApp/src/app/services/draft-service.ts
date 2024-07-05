@@ -24,6 +24,16 @@ export class DraftService {
     })
   }
 
+  public getDraftWithMedals(id: string): Promise<Draft> {
+    return new Promise((resolve) => {
+      this.http.get<Draft>(this.baseUrl + 'api/draft/' + id + '/leaderboard')
+      .subscribe({
+        next: (result) => { resolve(result) }, 
+        error: (e) => console.error(e)
+      });
+    })
+  }
+
   public draftAthlete(userId: string, athleteId: string): Promise<Athlete> {
     let request: DraftAthleteRequest = { userId: userId, id: athleteId }
 

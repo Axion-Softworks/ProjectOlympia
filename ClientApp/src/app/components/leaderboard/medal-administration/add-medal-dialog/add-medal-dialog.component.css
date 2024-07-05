@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+.confirm-dialog {
+  background-color:  #373d43 !important; 
+  color: rgb(209, 205, 199) !important;
+}
+
+.white-text {
+  color: rgb(209, 205, 199) !important;
+}
+
+.button-group {
+  justify-content: space-between;
+}
+
+.header {
+  font-size: x-small;
+}
