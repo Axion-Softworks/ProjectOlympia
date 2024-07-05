@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteLeaderboardData } from 'src/app/models/athlete-leaderboard-data';
@@ -17,7 +17,7 @@ import { AthleteLeaderboardData } from 'src/app/models/athlete-leaderboard-data'
     styleUrl: './leaderboard-athlete-summary.component.css',
     changeDetection: ChangeDetectionStrategy.Default,
 })
-export class LeaderboardAthleteSummaryComponent { 
+export class LeaderboardAthleteSummaryComponent implements OnInit { 
 
     @Input() athleteData: AthleteLeaderboardData[] = [];
 
@@ -26,5 +26,11 @@ export class LeaderboardAthleteSummaryComponent {
 
     constructor() {
         
+    }
+
+    ngOnInit(): void {
+        this.athleteData.sort((a, b) => {
+            return b.points - a.points || b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || a.name.localeCompare(b.name);
+        })
     }
 }

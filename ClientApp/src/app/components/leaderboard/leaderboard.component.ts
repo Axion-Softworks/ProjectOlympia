@@ -140,6 +140,10 @@ export class LeaderboardComponent implements OnDestroy {
 
             this.leaderboardData.push(data);
         });
+
+        this.leaderboardData.sort((a, b) => { 
+            return b.points - a.points || b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze;
+        })
     }
 
     showDetails(leaderboardData: LeaderboardData) {
