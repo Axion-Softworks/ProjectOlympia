@@ -1,1 +1,10 @@
-<button class="white-text button-affirmative" mat-raised-button cdkFocusInitial (click)="onAddMedalButtonClick()">Manage Medals</button>
+<div class="button-group">
+    <button class="white-text button-affirmative" mat-raised-button (click)="onAddMedalButtonClick()">
+        Manage Medals
+    </button>
+    @if (athletesWithMissingData.length > 0) {
+        <button class="white-text button-warning" mat-raised-button (click)="onAmendMissingDataButtonClick()">
+            Amend Missing Event Data
+        </button>
+    }
+</div>

@@ -71,11 +71,6 @@ export class AddMedalDialogComponent implements OnInit {
         this.selectedAthlete = { athleteId: athlete.id, medals: [...athlete.medals] };
     }
 
-    onConfirmClick() {
-        console.log(this.athletes[0].medals, this.selectedAthlete?.medals)
-        this.dialogRef.close();
-    }
-
     onSavedChangesEmitted(value: boolean) {
         if (value == true) {
             this.selectedAthlete = undefined;

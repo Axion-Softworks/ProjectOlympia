@@ -171,6 +171,8 @@ export class LeaderboardComponent implements OnDestroy {
 
         athlete.medals = data.medals;
 
+        this.athletes = [...this.athletes];
+
         this.processUsersToLeaderboardData();
     }
 }
