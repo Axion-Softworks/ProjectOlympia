@@ -5,6 +5,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
+using Konscious.Security.Cryptography;
+
 namespace ProjectOlympia.Controllers;
 
 [ApiController]
@@ -31,7 +33,12 @@ public class LoginController : ControllerBase
         var user = _context.Users
             .FirstOrDefault(f => f.Username == request.Username);
 
-        if (user == null || request.Password != user.Password)
+        if (user == null)
+            return Unauthorized();
+
+        var hash = this.HashPassword(request.Password, user.Salt, user.Id.ToString());
+
+        if (hash != user.Password)
             return Unauthorized();
 
         var response = new LoginResponse(user);
@@ -60,5 +67,25 @@ public class LoginController : ControllerBase
                 SecurityAlgorithms.HmacSha256Signature)
             );
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+    }
+
+    private string HashPassword(string password, string salt, string id) 
+    {
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var saltBytes = Encoding.UTF8.GetBytes(salt);
+        var userUuidBytes = Encoding.UTF8.GetBytes(id);
+
+        var argon2 = new Argon2i(passwordBytes)
+        {
+            DegreeOfParallelism = 4,
+            MemorySize = 8192,
+            Iterations = 40,
+            Salt = saltBytes,
+            AssociatedData = userUuidBytes
+        };
+
+        var hash = argon2.GetBytes(128);
+
+        return Encoding.UTF8.GetString(hash);
     }
 }

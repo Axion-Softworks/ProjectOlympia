@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Konscious.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ProjectOlympia.Controllers;
 
@@ -68,10 +71,16 @@ public class UserController : ControllerBase
         user.Id = Guid.NewGuid();
         user.Drafts = new List<Draft>();
 
+        var salt = RandomNumberGenerator.GetBytes(64);
+        var hash = this.HashPassword(request.Password, salt, user.Id.ToString());
+
+        user.Salt = Encoding.UTF8.GetString(salt);
+        user.Password = hash;
+
         _context.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok(user);
+        return Ok();
     }
 
     [HttpPut]
@@ -99,4 +108,22 @@ public class UserController : ControllerBase
         return Ok();
     }
 
+    private string HashPassword(string password, byte[] salt, string id) 
+    {
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var userUuidBytes = Encoding.UTF8.GetBytes(id);
+
+        var argon2 = new Argon2i(passwordBytes)
+        {
+            DegreeOfParallelism = 4,
+            MemorySize = 8192,
+            Iterations = 40,
+            Salt = salt,
+            AssociatedData = userUuidBytes
+        };
+
+        var hash = argon2.GetBytes(128);
+
+        return Encoding.UTF8.GetString(hash);
+    }
 }

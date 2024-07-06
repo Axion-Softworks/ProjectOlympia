@@ -8,6 +8,7 @@ public class User
     public required List<Draft> Drafts{ get; set; } = new List<Draft>();
     public bool IsAdmin { get; set; }
     public required string HexColor { get; set; }
+    public required string Salt { get; set; }
 
     public User()
     {}
