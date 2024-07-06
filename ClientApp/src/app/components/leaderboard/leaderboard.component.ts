@@ -9,7 +9,7 @@ import { Draft } from 'src/app/models/draft';
 import { EPlace } from 'src/app/models/e-place';
 import { LeaderboardData } from 'src/app/models/leaderboard-data';
 import { User } from 'src/app/models/user';
-import { DraftService } from 'src/app/services/draft-service';
+import { DraftService } from 'src/app/services/draft.service';
 import { LeaderboardAthleteSummaryComponent } from './leaderboard-athlete-summary-dialog/leaderboard-athlete-summary/leaderboard-athlete-summary.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaderboardAthleteSummaryDialogComponent } from './leaderboard-athlete-summary-dialog/leaderboard-athlete-summary-dialog.component';

@@ -5,11 +5,12 @@ import { FormGroup } from '@angular/forms';
 import { DraftSummary } from '../models/draft-summary';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserService extends BaseService {
 
   public onLoggedIn: Subject<string> = new Subject();
 
@@ -20,6 +21,8 @@ export class UserService {
     private router: Router,
     @Inject('BASE_URL') private baseUrl: string
   ) {
+    super();
+    
     if (this.loggedIn())
       setTimeout(() => this.onLoggedIn.next(this.getId()), 200);
   }
@@ -128,5 +131,4 @@ export class UserService {
     
     return id; 
   }
-
 }

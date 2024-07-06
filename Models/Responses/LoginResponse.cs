@@ -6,6 +6,7 @@ public class LoginResponse
     public string Username { get; set; }
     public bool IsAdmin { get; set; }
     public string HexColor { get; set; }
+    public string Jwt { get; set; }
 
     public LoginResponse(User user)
     {
@@ -13,5 +14,6 @@ public class LoginResponse
         Username = user.Username;
         IsAdmin = user.IsAdmin;
         HexColor = user.HexColor;
+        Jwt = "";
     }
 }

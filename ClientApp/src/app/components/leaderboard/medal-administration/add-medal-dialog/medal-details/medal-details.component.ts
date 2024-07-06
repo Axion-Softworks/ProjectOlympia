@@ -4,7 +4,7 @@ import { AthleteMedalData } from 'src/app/models/athlete-medal-data';
 import { EditMedalComponent } from '../edit-medal/edit-medal.component';
 import { MatButtonModule } from '@angular/material/button';
 import { Medal } from 'src/app/models/medal';
-import { MedalService } from 'src/app/services/medal-service';
+import { MedalService } from 'src/app/services/medal.service';
 
 @Component({
     selector: 'medal-details',

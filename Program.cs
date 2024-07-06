@@ -1,5 +1,8 @@
 using ProjectOlympia;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,34 @@ builder.Services.AddScoped<IWebSocketService, WebSocketService>();
 builder.Services.AddDbContext<DraftingContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectOlympiaConnectionString")));
 
+var jwtSigningKey = builder.Configuration.GetValue<string>("JwtSigningKey");
+
+if (string.IsNullOrWhiteSpace(jwtSigningKey))
+    throw new Exception("No JWT Signing Key");
+
+builder.Services.AddSingleton(delegate
+{
+    var jwtBearerOptions = new JwtOptions() { JwtSigningKey = jwtSigningKey };
+    return jwtBearerOptions;
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+    x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = false;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSigningKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +65,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 var webSocketOptions = new WebSocketOptions
 {

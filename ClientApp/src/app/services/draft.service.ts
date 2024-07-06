@@ -6,17 +6,21 @@ import { DraftAthleteRequest } from '../models/requests/draft-athlete-request';
 import { DraftSummary } from '../models/draft-summary';
 import { EDraftStatus } from '../models/e-draft-status';
 import { DraftAthleteGroupRequest } from '../models/requests/draft-athlete-group-request';
+import { UserService } from './user.service';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DraftService {
+export class DraftService extends BaseService {
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private userService: UserService) { super() }
 
   public getDraft(id: string): Promise<Draft> {
     return new Promise((resolve) => {
-      this.http.get<Draft>(this.baseUrl + 'api/draft/' + id)
+      this.http.get<Draft>(this.baseUrl + 'api/draft/' + id, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
@@ -26,7 +30,9 @@ export class DraftService {
 
   public getDraftWithMedals(id: string): Promise<Draft> {
     return new Promise((resolve) => {
-      this.http.get<Draft>(this.baseUrl + 'api/draft/' + id + '/leaderboard')
+      this.http.get<Draft>(this.baseUrl + 'api/draft/' + id + '/leaderboard', {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
@@ -38,7 +44,9 @@ export class DraftService {
     let request: DraftAthleteRequest = { userId: userId, id: athleteId }
 
     return new Promise((resolve, reject) => {
-      this.http.put<Athlete>(this.baseUrl + 'api/athlete/assign', request)
+      this.http.put<Athlete>(this.baseUrl + 'api/athlete/assign', request, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => { console.error(e); reject(e) }
@@ -50,7 +58,9 @@ export class DraftService {
     let request: DraftAthleteGroupRequest = { userId: userId, draftId: draftId, group: group }
 
     return new Promise((resolve, reject) => {
-      this.http.put<any>(this.baseUrl + 'api/draft/assign-group', request)
+      this.http.put<any>(this.baseUrl + 'api/draft/assign-group', request, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => { console.error(e); reject(e) }
@@ -60,7 +70,9 @@ export class DraftService {
 
   public getDraftSummariesByUserId(userId: string): Promise<DraftSummary[]> {
     return new Promise((resolve) => {
-      this.http.get<DraftSummary[]>(this.baseUrl + 'api/draft/summary/' + userId)
+      this.http.get<DraftSummary[]>(this.baseUrl + 'api/draft/summary/' + userId, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
@@ -70,7 +82,9 @@ export class DraftService {
 
   public setDraftStatus(draftId: string, status: EDraftStatus): Promise<Draft> {
     return new Promise((resolve) => {
-      this.http.put<Draft>(this.baseUrl + 'api/draft/status/' + draftId + '/' + status, null)
+      this.http.put<Draft>(this.baseUrl + 'api/draft/status/' + draftId + '/' + status, null, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
@@ -80,7 +94,9 @@ export class DraftService {
 
   public randomiseDraft(draftId: string): Promise<any> {
     return new Promise((resolve) => {
-      this.http.put<any>(this.baseUrl + 'api/draft/randomise/' + draftId, null)
+      this.http.put<any>(this.baseUrl + 'api/draft/randomise/' + draftId, null, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
@@ -90,7 +106,9 @@ export class DraftService {
 
   public randomiseGroupDraft(draftId: string): Promise<any> {
     return new Promise((resolve) => {
-      this.http.put<any>(this.baseUrl + 'api/draft/randomise-groups/' + draftId, null)
+      this.http.put<any>(this.baseUrl + 'api/draft/randomise-groups/' + draftId, null, {
+        headers: this.getAuthorization()
+      })
       .subscribe({
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)

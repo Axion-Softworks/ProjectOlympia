@@ -8,7 +8,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatExpansionModule } from '@angular/material/expansion'; 
 import { UserPanelComponent } from '../user-panel/user-panel.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DraftService } from 'src/app/services/draft-service';
+import { DraftService } from 'src/app/services/draft.service';
 import { Draft } from 'src/app/models/draft';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from 'src/app/services/user.service';
@@ -409,7 +409,7 @@ export class DraftComponent implements OnDestroy {
   getUser(userId: string): User {
     var user = this.draft?.users.find(f => f.id == userId);
 
-    return user ? user : { id: "1", username: "error", athletes: [], drafts: [], hexColor: "", isAdmin: false };
+    return user ? user : { id: "1", username: "error", athletes: [], drafts: [], hexColor: "", isAdmin: false, jwt: "" };
   }
 
   calculatePicksRemaining() {

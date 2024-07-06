@@ -8,4 +8,5 @@ export interface User {
     drafts: DraftSummary[];
     isAdmin: boolean;
     hexColor: string;
+    jwt: string;
 }

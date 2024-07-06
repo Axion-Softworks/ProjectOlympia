@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { DraftSummary } from 'src/app/models/draft-summary';
 import { EDraftStatus } from 'src/app/models/e-draft-status';
-import { DraftService } from 'src/app/services/draft-service';
+import { DraftService } from 'src/app/services/draft.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
