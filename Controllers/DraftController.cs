@@ -180,6 +180,7 @@ public class DraftController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("randomise/{id}")]
     public async Task<IActionResult> RandomiseDraftOrder([FromRoute] Guid id)
     {
@@ -201,6 +202,7 @@ public class DraftController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("randomise-groups/{draftId}")]
     public async Task<IActionResult> RandomiseAthleteGroupsByDraftIdAsync([FromRoute] Guid draftId)
     {
