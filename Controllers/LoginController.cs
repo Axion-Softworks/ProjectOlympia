@@ -72,7 +72,7 @@ public class LoginController : ControllerBase
     private string HashPassword(string password, string salt, string id) 
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
-        var saltBytes = Encoding.UTF8.GetBytes(salt);
+        var saltBytes = Convert.FromHexString(salt);
         var userUuidBytes = Encoding.UTF8.GetBytes(id);
 
         var argon2 = new Argon2i(passwordBytes)
@@ -86,6 +86,6 @@ public class LoginController : ControllerBase
 
         var hash = argon2.GetBytes(128);
 
-        return Encoding.UTF8.GetString(hash);
+        return Convert.ToHexString(hash);
     }
 }

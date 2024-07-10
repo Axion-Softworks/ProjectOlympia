@@ -74,7 +74,7 @@ public class UserController : ControllerBase
         var salt = RandomNumberGenerator.GetBytes(64);
         var hash = this.HashPassword(request.Password, salt, user.Id.ToString());
 
-        user.Salt = Encoding.UTF8.GetString(salt);
+        user.Salt = Convert.ToHexString(salt);
         user.Password = hash;
 
         _context.Add(user);
@@ -86,7 +86,17 @@ public class UserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserRequest request)
     {
-        var user = this._mapper.Map<User>(request);
+        var user = this._context.Users.FirstOrDefault(x => x.Id == request.Id);
+
+        if (user == null)
+            return NotFound();
+
+        var hash = this.HashPassword(request.Password, Convert.FromHexString(user.Salt), user.Id.ToString());
+
+        user.Username = request.Username;
+        user.Password = hash;
+        user.IsAdmin = request.IsAdmin;
+        user.HexColor = request.HexColor;
 
         _context.Update(user);
         await _context.SaveChangesAsync();
@@ -124,6 +134,6 @@ public class UserController : ControllerBase
 
         var hash = argon2.GetBytes(128);
 
-        return Encoding.UTF8.GetString(hash);
+        return Convert.ToHexString(hash);
     }
 }
