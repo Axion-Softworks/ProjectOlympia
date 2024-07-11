@@ -16,11 +16,14 @@ public class DataController : ControllerBase
     private readonly ILogger<DataController> _logger;
     private readonly IMapper _mapper;
     private readonly DraftingContext _context;
-    public DataController(ILogger<DataController> logger, IMapper mapper, DraftingContext draftingContext)
+    private readonly IConfiguration _configuration;
+
+    public DataController(ILogger<DataController> logger, IMapper mapper, DraftingContext draftingContext, IConfiguration configuration)
     {
         _logger = logger;
         _mapper = mapper;
         _context = draftingContext;
+        _configuration = configuration;
     }
 
     [HttpPost]
@@ -38,7 +41,13 @@ public class DataController : ControllerBase
             {
                 MissingFieldFound = null
             };
-            using (var reader = new StreamReader($@"Data\Files\{request.Filename}"))
+
+            var filepath = this._configuration.GetValue<string>("InputFilePath");
+
+            if (filepath == null || Directory.Exists(filepath) == false)
+                throw new Exception("File Path Error");
+
+            using (var reader = new StreamReader($@"{filepath}{request.Filename}"))
             using (var csv = new CsvReader(reader, config))
             {
                 records = csv.GetRecords<AthleteCsvData>().ToList();
