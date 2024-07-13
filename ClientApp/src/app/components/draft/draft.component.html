@@ -13,7 +13,7 @@
       </div>
     }
 
-    <div *ngIf="individualDraftIsInProgress()" class="sort-buttons">
+    <div *ngIf="draftIsNotStarted() || individualDraftIsInProgress()" class="sort-buttons">
       <mat-button-toggle-group name="athleteSort" aria-label="Sort Athletes" (change)="sortAthletes($event.value)" value="country" vertical="true">
         <mat-button-toggle class="sort-button" value="country">Country</mat-button-toggle>
         <mat-button-toggle class="sort-button" value="discipline">Discipline</mat-button-toggle>
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  @if (individualDraftIsInProgress()) {
+  @if (draftIsNotStarted() || individualDraftIsInProgress()) {
     <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
       <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
         <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
