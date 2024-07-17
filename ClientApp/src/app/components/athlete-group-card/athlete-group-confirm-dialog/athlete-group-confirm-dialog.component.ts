@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DraftGroup } from 'src/app/models/draft-group';
 
@@ -16,7 +17,8 @@ import { DraftGroup } from 'src/app/models/draft-group';
         MatDialogContent,
         MatDialogActions,
         MatDialogClose,
-        MatTooltipModule
+        MatTooltipModule,
+        MatIconModule
     ],
     templateUrl: './athlete-group-confirm-dialog.component.html',
     styleUrl: './athlete-group-confirm-dialog.component.css',

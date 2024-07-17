@@ -6,14 +6,17 @@
     <div class="white-text pb-12 pl-12 pt-12">
         Group {{draftGroup.group + 1}}
     </div>
-    @for (athlete of draftGroup.athletes; track athlete) {
-        <div class="athlete-details-container">
-            <div class="country-name">
-                <div matTooltip="{{athlete.country}}" matTooltipPosition="left" class="country">
-                    <span class="fi fi-{{athlete.iso}}"></span>
-                </div>          
-                <div matTooltip="{{athlete.discipline}}: {{athlete.description}}" matTooltipPosition="right">{{athlete.surname}}</div>
+    <div class="mb-12">
+        @for (athlete of draftGroup.athletes; track athlete) {
+            <div class="athlete-details-container">
+                <div class="country-name">
+                    <div matTooltip="{{athlete.country}}" matTooltipPosition="left" class="country">
+                        <span class="fi fi-{{athlete.iso}}"></span>
+                    </div>          
+                    <div matTooltip="{{athlete.discipline}}: {{athlete.description}}" matTooltipPosition="right">{{athlete.surname}}</div>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
+   
 </mat-card>

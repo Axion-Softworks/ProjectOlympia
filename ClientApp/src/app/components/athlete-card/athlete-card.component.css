@@ -101,6 +101,8 @@
   /* -webkit-filter: invert(1); */
    /* filter: invert(1); */
   max-width: 200px;
+  width: 100%;
+  height: auto;
 }
 
 .space-between {

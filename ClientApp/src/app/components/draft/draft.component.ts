@@ -1,4 +1,4 @@
-import { Component, OnDestroy, } from '@angular/core';
+import { Component, HostListener, OnDestroy, } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
@@ -53,15 +53,10 @@ import { DraftStatusResponse } from 'src/app/models/web-socket/draft-status-resp
   ]
 })
 export class DraftComponent implements OnDestroy {
-  // @HostListener('window:resize', ['$event.target.innerWidth'])
-  // onResize(width: number) {
-  //   if (width >= 1200) {
-  //     this.rowHeight = "2:1";
-  //   }
-  //   else {
-  //     this.rowHeight = "1:1";
-  //   }
-  // }
+  @HostListener('window:resize', ['$event.target.innerWidth'])
+  onResize(width: number) {
+    this.setSizing(width);
+  }
 
   private _unsubscribeAll: Subject<any> = new Subject();
 
@@ -77,6 +72,7 @@ export class DraftComponent implements OnDestroy {
   public draftGroups: DraftGroup[] = [];
 
   public rowHeight = "1:1";
+  public cols: number = 5;
 
   constructor(
     private router: Router,
@@ -87,6 +83,8 @@ export class DraftComponent implements OnDestroy {
     private snackBar: MatSnackBar,
     public dialog: MatDialog
   ) {
+    this.setSizing(window.innerWidth);
+    
     var draftId = this.route.snapshot.paramMap.get('id');
 
     if (!!draftId) {
@@ -589,5 +587,14 @@ export class DraftComponent implements OnDestroy {
         }
       }
     );
+  }
+
+  setSizing(width: number) {
+    if (width >= 1200) {
+      this.cols = 5;
+    }
+    else {
+      this.cols = 3;
+    }
   }
 }

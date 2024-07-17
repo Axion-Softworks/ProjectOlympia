@@ -51,7 +51,7 @@
 
   @if (draftIsNotStarted() || individualDraftIsInProgress()) {
     <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
-      <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
+      <mat-grid-list cols="{{cols}}" rowHeight="{{rowHeight}}" class="card-parent">
         <mat-grid-tile *cdkVirtualFor="let athlete of draft?.athletes" class="card-container">
           <athlete-card [athlete]="athlete" [draftedUserData]="getDraftedUserData(athlete.userId)" [disabled]="athleteIsDrafted(athlete)" [draftStarted]="individualDraftIsInProgress()" [userTurn]="isUsersTurn()" (emitDraft)="onDraftPickEmitted($event)"></athlete-card>
         </mat-grid-tile>
@@ -66,7 +66,7 @@
   }
   @else if (groupDraftIsInProgress()) {
     <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="0">
-      <mat-grid-list cols="5" rowHeight="{{rowHeight}}" class="card-parent">
+      <mat-grid-list cols="{{cols}}" rowHeight="{{rowHeight}}" class="card-parent">
         <mat-grid-tile *cdkVirtualFor="let draftGroup of draftGroups" class="card-container">
           <athlete-group-card [draftGroup]="draftGroup" [draftedUserData]="getDraftedUserData(draftGroup.athletes[0].userId)" [disabled]="athleteIsDrafted(draftGroup.athletes[0])" [draftStarted]="groupDraftIsInProgress()" [userTurn]="isUsersTurn()" (emitDraft)="onGroupDraftPickEmitted($event)"></athlete-group-card>
         </mat-grid-tile>

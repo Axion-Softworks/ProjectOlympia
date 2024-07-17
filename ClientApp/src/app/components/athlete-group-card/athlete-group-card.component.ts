@@ -45,7 +45,7 @@ export class AthleteGroupCardComponent {
         const dialogRef = this.dialog.open(AthleteGroupConfirmDialogComponent, {
             data: { draftGroup: this.draftGroup, buttonsEnabled: this.draftStarted && this.userTurn },
             maxWidth: '500px',
-            minWidth: '400px'
+            minWidth: '250px'
         });
 
         dialogRef.afterClosed().subscribe(result => {

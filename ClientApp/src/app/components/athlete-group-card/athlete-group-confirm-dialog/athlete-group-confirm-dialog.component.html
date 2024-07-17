@@ -1,7 +1,23 @@
 <div class="confirm-dialog">
     <h2 class="white-text" mat-dialog-title>{{buttonsEnabled ? "Draft Group?" : "Group Data"}}</h2>
     <mat-dialog-content class="white-text">
-        Draft Group {{draftGroup.group + 1}}?
+       @if (buttonsEnabled) {
+       <div class="mb-12"> Draft Group {{draftGroup.group + 1}}? </div>
+       }
+
+       @for (athlete of draftGroup.athletes; track athlete) {
+        <div class="athlete-details-container">
+          <div class="country-name">
+            <div matTooltip="{{athlete.country}}" class="country">
+              <span class="fi fi-{{athlete.iso}}"></span>
+            </div>          
+            <div>{{athlete.surname}}</div>
+          </div>
+          <mat-icon class="info material-icons-outlined" matTooltip="{{athlete.discipline}}: {{athlete.description}}" matTooltipPosition="right">
+            info
+          </mat-icon> 
+        </div>
+      }
     </mat-dialog-content>
     <mat-dialog-actions *ngIf="buttonsEnabled "class="button-group" >
         <button class="white-text" mat-raised-button color="warn" (click)="onNoClick()">No Thanks</button>

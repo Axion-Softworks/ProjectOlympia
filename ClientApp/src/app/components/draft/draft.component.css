@@ -53,4 +53,9 @@ th, tr {
   -webkit-transform: translateX(-50%) translateY(-50%);
   align-items: center;
   font-size: x-large;
+  text-align: center;
+}
+
+.sidebar {
+  margin-right: 8px;
 }
