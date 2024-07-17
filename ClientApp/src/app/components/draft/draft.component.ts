@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteCardComponent } from '../athlete-card/athlete-card.component';
@@ -52,7 +52,7 @@ import { DraftStatusResponse } from 'src/app/models/web-socket/draft-status-resp
     UserPanelComponent
   ]
 })
-export class DraftComponent implements OnDestroy {
+export class DraftComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event.target.innerWidth'])
   onResize(width: number) {
     this.setSizing(width);
@@ -233,6 +233,10 @@ export class DraftComponent implements OnDestroy {
         this.calculateGroupDraftData();
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.sortAthletes('country');
   }
 
   ngOnDestroy(): void {
