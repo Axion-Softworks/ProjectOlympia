@@ -135,10 +135,10 @@ export class WebSocketService {
 
     private log(message: string, value: any = null) {
         if (!value) {
-            console.log(`[${new Date().toISOString()}] ${message}`);
+            //console.log(`[${new Date().toISOString()}] ${message}`);
         }
         else {
-            console.log(`[${new Date().toISOString()}] ${message}`, value);
+            //console.log(`[${new Date().toISOString()}] ${message}`, value);
         }
     }
 }

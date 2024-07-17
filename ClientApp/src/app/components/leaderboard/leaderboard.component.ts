@@ -71,7 +71,7 @@ export class LeaderboardComponent implements OnDestroy {
                 this.users = result.users;
                 this.processUsersToLeaderboardData();
 
-                console.log(this.users, this.leaderboardData);
+                //console.log(this.users, this.leaderboardData);
             });
         }
 
@@ -121,7 +121,8 @@ export class LeaderboardComponent implements OnDestroy {
                     bronze: bronzeValue,
                     silver: silverValue,
                     gold: goldValue,
-                    points: bronzeValue + (silverValue * 2) + (goldValue * 4)
+                    points: bronzeValue + (silverValue * 2) + (goldValue * 4),
+                    medals: athlete.medals
                 };
 
                 athleteLeaderboardData.push(datum);

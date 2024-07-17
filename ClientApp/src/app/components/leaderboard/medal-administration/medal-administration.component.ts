@@ -51,7 +51,7 @@ export class MedalAdministrationComponent implements OnInit, OnChanges {
             }
         });
 
-        console.log(this.athletesWithMissingData)
+        //console.log(this.athletesWithMissingData)
     }
 
     isEmpty(value: string): boolean {

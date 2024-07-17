@@ -19,3 +19,11 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
+
+.centered {
+  text-align: center;
+}
+
+tr.example-detail-row {
+  height: 0;
+}

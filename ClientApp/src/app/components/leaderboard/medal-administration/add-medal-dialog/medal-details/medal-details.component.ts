@@ -28,6 +28,7 @@ export class MedalDetailsComponent implements OnInit {
     updatedAthleteMedalData!: AthleteMedalData;
     originalMedalData: Medal[] = [];
     dataChanged: boolean = false;
+    saving: boolean = false;
 
     constructor(private medalService: MedalService) {
 
@@ -90,9 +91,15 @@ export class MedalDetailsComponent implements OnInit {
     }
 
     onSaveChangesButtonClick() {
+        if (this.saving)
+            return;
+
+        this.saving = true;
+
         this.medalService.manageMedalsByAthleteId(this.updatedAthleteMedalData)
             .then(() => {
                 this.savedChangesEmitter.emit(true);
+                this.saving = false;
             });
     }
 }

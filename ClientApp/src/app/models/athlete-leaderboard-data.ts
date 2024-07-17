@@ -1,3 +1,5 @@
+import { Medal } from "./medal";
+
 export interface AthleteLeaderboardData {
     athleteId: string;
     name: string;
@@ -7,4 +9,5 @@ export interface AthleteLeaderboardData {
     silver: number;
     gold: number;
     points: number;
+    medals: Medal[];
 }

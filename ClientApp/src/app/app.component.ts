@@ -9,6 +9,6 @@ export class AppComponent {
   title = 'app';
 
   constructor(private webSocketService: WebSocketService) {
-    console.log("Is WS Connected: " + this.webSocketService.connected);
+    //console.log("Is WS Connected: " + this.webSocketService.connected);
   }
 }
