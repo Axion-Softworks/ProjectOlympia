@@ -52,7 +52,7 @@ import { DraftStatusResponse } from 'src/app/models/web-socket/draft-status-resp
     UserPanelComponent
   ]
 })
-export class DraftComponent implements OnInit, OnDestroy {
+export class DraftComponent implements OnDestroy {
   @HostListener('window:resize', ['$event.target.innerWidth'])
   onResize(width: number) {
     this.setSizing(width);
@@ -91,6 +91,7 @@ export class DraftComponent implements OnInit, OnDestroy {
       this.draftService.getDraft(draftId)
         .then((result: Draft) => {
           this.draft = result;
+          this.sortAthletes('country');
           //console.log(this.draft)
 
           this.draft?.users.forEach(user => {
@@ -233,10 +234,6 @@ export class DraftComponent implements OnInit, OnDestroy {
         this.calculateGroupDraftData();
       }
     });
-  }
-
-  ngOnInit(): void {
-    this.sortAthletes('country');
   }
 
   ngOnDestroy(): void {
