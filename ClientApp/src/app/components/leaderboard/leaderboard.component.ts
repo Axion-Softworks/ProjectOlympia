@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -41,6 +41,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     changeDetection: ChangeDetectionStrategy.Default,
 })
 export class LeaderboardComponent implements OnDestroy { 
+    @HostListener('window:resize', ['$event.target.innerWidth'])
+    onResize(width: number) {
+      this.mobile = width < 1200;
+    }
+    
     private _unsubscribeAll: Subject<any> = new Subject();
 
     athletes: Athlete[] = [];
@@ -48,6 +53,8 @@ export class LeaderboardComponent implements OnDestroy {
     leaderboardData: LeaderboardData[] = [];
 
     displayedColumns: string[] = ['name', 'bronze', 'silver', 'gold', 'points', 'details'];
+
+    mobile = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -57,6 +64,7 @@ export class LeaderboardComponent implements OnDestroy {
         private dialog: MatDialog,
         private snackBar: MatSnackBar
     ) {
+        this.mobile = window.innerWidth < 1200;
         var draftId = this.route.snapshot.paramMap.get('id');
 
         if (!!draftId) {
@@ -151,8 +159,8 @@ export class LeaderboardComponent implements OnDestroy {
 
     showDetails(leaderboardData: LeaderboardData) {
         const dialogRef = this.dialog.open(LeaderboardAthleteSummaryDialogComponent, {
-            data: { athleteData: leaderboardData.athleteLeaderboardData, name: leaderboardData.name },
-            maxWidth: '600px',
+            data: { athleteData: leaderboardData.athleteLeaderboardData, name: leaderboardData.name, mobile: this.mobile },
+            maxWidth: this.mobile ? "600px" : '800px',
             minWidth: '400px'
         })
     }

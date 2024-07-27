@@ -1,7 +1,7 @@
 <div class="confirm-dialog">
     <h2 class="white-text" mat-dialog-title>Scoring Summary - {{name}}</h2>
     <mat-dialog-content>
-        <leaderboard-athlete-summary [athleteData]="athleteData"></leaderboard-athlete-summary>
+        <leaderboard-athlete-summary [athleteData]="athleteData" [mobile]="mobile"></leaderboard-athlete-summary>
     </mat-dialog-content>
     <mat-dialog-actions class="button-group">
         <button class="white-text button-affirmative" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>

@@ -31,8 +31,10 @@ import { EPlace } from 'src/app/models/e-place';
 export class LeaderboardAthleteSummaryComponent implements OnInit { 
 
     @Input() athleteData: AthleteLeaderboardData[] = [];
+    @Input() mobile: boolean = false;
 
-    displayedColumns: string[] = ['name', 'bronze', 'silver', 'gold', 'points'];
+    displayedColumns: string[] = ['name', 'discipline', 'bronze', 'silver', 'gold', 'points'];
+    mobileDisplayedColumns: string[] = ['name', 'bronze', 'silver', 'gold', 'points'];
     expandedAthleteData: AthleteLeaderboardData | null = null;
 
     constructor() {
@@ -74,5 +76,12 @@ export class LeaderboardAthleteSummaryComponent implements OnInit {
             default:
                 return '';
         }
+    }
+
+    getTooltip(datum: AthleteLeaderboardData) : string {
+        if (this.mobile)
+            return `${datum.discipline}: ${datum.description}`;
+        else 
+            return datum.description;
     }
 }

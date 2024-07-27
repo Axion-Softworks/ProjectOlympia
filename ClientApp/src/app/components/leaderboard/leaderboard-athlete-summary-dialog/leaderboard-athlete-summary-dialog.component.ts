@@ -26,9 +26,11 @@ export class LeaderboardAthleteSummaryDialogComponent {
 
     athleteData: AthleteLeaderboardData[] = [];
     name: string;
+    mobile: boolean;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.athleteData = data.athleteData;
         this.name = data.name;
+        this.mobile = data.mobile;
     }
 }
