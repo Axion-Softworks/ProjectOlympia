@@ -51,6 +51,7 @@ export class LeaderboardComponent implements OnDestroy {
     athletes: Athlete[] = [];
     users: User[] = [];
     leaderboardData: LeaderboardData[] = [];
+    draftId: string;
 
     displayedColumns: string[] = ['name', 'bronze', 'silver', 'gold', 'points', 'details'];
 
@@ -65,10 +66,10 @@ export class LeaderboardComponent implements OnDestroy {
         private snackBar: MatSnackBar
     ) {
         this.mobile = window.innerWidth < 1200;
-        var draftId = this.route.snapshot.paramMap.get('id');
+        this.draftId = this.route.snapshot.paramMap.get('id') || "";
 
-        if (!!draftId) {
-            this.draftService.getDraftWithMedals(draftId)
+        if (!!this.draftId) {
+            this.draftService.getDraftWithMedals(this.draftId)
             .then((result: Draft) => {
                 this.athletes = result.athletes;
 
@@ -95,7 +96,16 @@ export class LeaderboardComponent implements OnDestroy {
                 
                 this.snackBar.open(`Medals updated for ${athlete.forename} ${athlete.surname}`, "UPDATE", { duration: 5000 })  
             }
-        })
+        });
+
+        this.websocketService.onAllMedalsUpdated.pipe(takeUntil(this._unsubscribeAll)).subscribe({
+            next: (draftId: string) => {
+                if (draftId != this.draftId)
+                    return;
+
+                window.location.reload();
+            }
+        });
     }
 
     ngOnDestroy(): void {

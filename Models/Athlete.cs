@@ -15,9 +15,10 @@ public class Athlete
     public Guid? UserId { get; set; }
     public required Draft Draft { get; set; }
     public required int Group { get; set; } = -1;
+    public required string OlympicId { get; set; }
 
     public Athlete() {}
-    public Athlete(string forename, string surname, string description, string discipline, string country, string countryCode, string iso, List<Medal> medals, Draft draft)
+    public Athlete(string forename, string surname, string description, string discipline, string country, string countryCode, string iso, List<Medal> medals, Draft draft, string olympicId)
     {
         this.Forename = forename;
         this.Surname = surname;
@@ -28,5 +29,6 @@ public class Athlete
         this.Iso = iso;
         this.Medals = medals;
         this.Draft = draft;
+        this.OlympicId = olympicId;
     }
 }

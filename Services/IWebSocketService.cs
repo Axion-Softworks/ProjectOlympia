@@ -8,5 +8,6 @@ namespace ProjectOlympia
         Task SendGroupDraftRandomisedMessageAsync(Guid draftId, List<Guid> draftUserIds, List<AthleteGroup> athleteGroups);
         Task SendAthleteGroupDraftedMessageAsync(Guid userId, List<Guid> draftUserIds, int group);
         Task SendMedalsManagedMessageAsync(Guid draftId, List<Guid> draftUserIds, ManageMedalsRequest data);
+        Task SendAllMedalsUpdatedMessageAsync(Guid draftId, List<Guid> draftUserIds);
     }
 }

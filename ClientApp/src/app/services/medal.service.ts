@@ -19,6 +19,18 @@ export class MedalService extends BaseService {
         next: (result) => { resolve(result) }, 
         error: (e) => console.error(e)
       });
+    });
+  }
+
+  public getMedalData(draftId: string): Promise<any> {
+    return new Promise((resolve) => {
+      this.http.get<any>(this.baseUrl + 'api/medal/update/' + draftId,
+        { headers: this.getAuthorization() }
+      )
+      .subscribe({
+        next: (result) => { resolve(result) }, 
+        error: (e) => console.error(e)
+      });
     })
   }
 

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AddMedalDialogComponent } from './add-medal-dialog/add-medal-dialog.component';
 import { Athlete } from 'src/app/models/athlete';
+import { MedalService } from 'src/app/services/medal.service';
 
 @Component({
     selector: 'medal-administration',
@@ -20,9 +21,10 @@ import { Athlete } from 'src/app/models/athlete';
 export class MedalAdministrationComponent implements OnInit, OnChanges { 
 
     @Input() athletes!: Athlete[];
+    @Input() draftId!: string;
     athletesWithMissingData: Athlete[] = [];
 
-    constructor(private dialog: MatDialog) {
+    constructor(private dialog: MatDialog, private medalService: MedalService) {
         
     }
 
@@ -64,5 +66,9 @@ export class MedalAdministrationComponent implements OnInit, OnChanges {
             maxWidth: '500px',
             minWidth: '500px'
         })
+    }
+
+    onGetMedalDataButtonClick() {
+        this.medalService.getMedalData(this.draftId);
     }
 }

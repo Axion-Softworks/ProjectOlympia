@@ -5,5 +5,6 @@ export enum EWebSocketOperation {
     DraftRandomised,
     GroupDraftRandomised,
     AthleteGroupDrafted,
-    MedalsManaged
+    MedalsManaged,
+    AllMedalsUpdated
 }

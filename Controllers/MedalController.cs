@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ProjectOlympia.Controllers;
 
@@ -14,6 +15,7 @@ public class MedalController : ControllerBase
     private readonly IMapper _mapper;
     private DraftingContext _context;
     private IWebSocketService _websocketService;
+    private readonly HttpClient _httpClient;
 
     public MedalController(ILogger<MedalController> logger, IMapper mapper, DraftingContext draftingContext, IWebSocketService webSocketService)
     {
@@ -21,6 +23,7 @@ public class MedalController : ControllerBase
         _mapper = mapper;
         _context = draftingContext;
         _websocketService = webSocketService;
+        _httpClient = new HttpClient();
     }
 
     [HttpGet]
@@ -56,6 +59,72 @@ public class MedalController : ControllerBase
 
         return Ok(response);
     }
+
+    
+    [HttpGet("update/{draftId}")]
+    public async Task<IActionResult> GetMedalDataFromOlympicApi([FromRoute] Guid draftId) 
+    {
+        var response = await _httpClient.GetStringAsync("https://olympics.com/en/paris-2024/medals/medallists");
+
+        if (string.IsNullOrWhiteSpace(response))
+            return BadRequest();
+
+        var start = "\"athletes\":[";
+        var end = "\"competitionCode\":";
+        var startIndex = response.IndexOf(start) + start.Length - 1;
+        var endIndex = response.IndexOf(end) - 1;
+
+        response = response.Substring(startIndex, endIndex - startIndex);
+
+        var data = JsonConvert.DeserializeObject<List<OlympicData>>(response);
+
+        if (data == null || data.Count < 1)
+            return NotFound();
+
+        var athletes = this._context.Athletes.Include(i => i.Medals).Include(i => i.Draft).ThenInclude(i => i.Users).Where(x => x.Draft.Id == draftId).ToList();
+
+        foreach (var oData in data)
+        {
+            if (oData.Medals == null || oData.Medals.Count < 1)
+                continue;
+
+            var athlete = athletes.FirstOrDefault(x => x.OlympicId == oData.Code);
+
+            if (athlete == null)
+                continue;
+
+            _context.RemoveRange(athlete.Medals);
+
+            foreach (var oMedal in oData.Medals)
+            {
+                var medal = new Medal{ Id = Guid.NewGuid(), Event = oMedal.EventName, Place = this.ParsePlace(oMedal.MedalType), Athlete = athlete };
+                _context.Add(medal);
+            }  
+        }
+
+        await _context.SaveChangesAsync();
+
+        await this._websocketService.SendAllMedalsUpdatedMessageAsync(draftId, athletes[0].Draft.Users.Select(s => s.Id).ToList());
+
+        return Ok();
+    }
+
+    private EPlace ParsePlace(string place) {
+        switch (place)
+        {
+            case "ME_BRONZE":
+                return EPlace.Bronze;
+
+            case "ME_SILVER":
+                return EPlace.Silver;
+
+            case "ME_GOLD":
+                return EPlace.Gold;
+
+            default:
+                return EPlace.Bronze;
+        }
+    } 
 
     [HttpPost]
     public async Task<IActionResult> AddMedalAsync([FromBody] AddMedalRequest request)
@@ -154,5 +223,4 @@ public class MedalController : ControllerBase
 
         return Ok();
     }
-
 }

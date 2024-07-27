@@ -8,6 +8,7 @@ namespace ProjectOlympia
         DraftRandomised,
         GroupDraftRandomised,
         AthleteGroupDrafted,
-        MedalsManaged
+        MedalsManaged,
+        AllMedalsUpdated
     }
 }

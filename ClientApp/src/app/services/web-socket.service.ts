@@ -32,6 +32,7 @@ export class WebSocketService {
     public readonly onGroupDraftRandomised: Subject<GroupDraftRandomisedResponse> = new Subject();   
     public readonly onAthleteGroupDrafted: Subject<AthleteGroupDraftedResponse> = new Subject();
     public readonly onMedalsManaged: Subject<AthleteMedalData> = new Subject();
+    public readonly onAllMedalsUpdated: Subject<string> = new Subject();
 
     constructor(
         @Inject("BASE_URL") baseUrl: string,
@@ -126,6 +127,10 @@ export class WebSocketService {
                 const medalsManagedResponse: AthleteMedalData = JSON.parse(response.content);
 
                 this.onMedalsManaged.next(medalsManagedResponse);
+                break;
+
+            case EWebSocketOperation.AllMedalsUpdated:
+                this.onAllMedalsUpdated.next(response.content);
                 break;
 
             default:
