@@ -1,6 +1,7 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AthleteLeaderboardData } from 'src/app/models/athlete-leaderboard-data';
@@ -13,7 +14,8 @@ import { EPlace } from 'src/app/models/e-place';
         CommonModule,
 
         MatTableModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatIconModule
     ],
     templateUrl: './leaderboard-athlete-summary.component.html',
     styleUrl: './leaderboard-athlete-summary.component.css',
@@ -52,6 +54,22 @@ export class LeaderboardAthleteSummaryComponent implements OnInit {
 
             case EPlace.gold:
                 return "Gold";
+            
+            default:
+                return '';
+        }
+    }
+
+    parsePlaceColor(place: EPlace) : string {
+        switch (place) {
+            case EPlace.bronze:
+                return "#CD7F32";
+
+            case EPlace.silver:
+                return "#C0C0C0";
+
+            case EPlace.gold:
+                return "#FFD700";
             
             default:
                 return '';

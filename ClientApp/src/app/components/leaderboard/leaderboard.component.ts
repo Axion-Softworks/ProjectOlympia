@@ -122,7 +122,9 @@ export class LeaderboardComponent implements OnDestroy {
                     silver: silverValue,
                     gold: goldValue,
                     points: bronzeValue + (silverValue * 2) + (goldValue * 4),
-                    medals: athlete.medals
+                    medals: athlete.medals,
+                    description: athlete.description,
+                    discipline: athlete.discipline
                 };
 
                 athleteLeaderboardData.push(datum);

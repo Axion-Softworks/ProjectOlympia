@@ -27,3 +27,22 @@
 tr.example-detail-row {
   height: 0;
 }
+
+.info {
+  font-size: 15px;
+  padding-left: 8px;
+  padding-top: 4px;
+}
+
+.medal-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.medal {
+  margin-right: 12px;
+}

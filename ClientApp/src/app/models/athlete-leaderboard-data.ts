@@ -10,4 +10,6 @@ export interface AthleteLeaderboardData {
     gold: number;
     points: number;
     medals: Medal[];
+    discipline: string;
+    description: string;
 }

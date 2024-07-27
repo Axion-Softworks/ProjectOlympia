@@ -10,6 +10,9 @@
                 <div class="ml-12">
                     {{datum.name}}
                 </div>
+                <mat-icon class="info material-icons-outlined" matTooltip="{{datum.discipline}}: {{datum.description}}" matTooltipPosition="right">
+                  info
+                </mat-icon> 
             </div>
         </td>
     </ng-container>
@@ -38,8 +41,13 @@
         <td mat-cell *matCellDef="let athleteData" [attr.colspan]="displayedColumns.length">
         <div class="example-element-detail" [@detailExpand]="athleteData == expandedAthleteData ? 'expanded' : 'collapsed'">
             @for(medal of athleteData.medals; track medal) {
-                <div class="white-text">
-                    {{medal.event}}: {{parsePlace(medal.place)}}
+                <div class="medal-row">
+                    <mat-icon class="material-symbols-outlined medal" [ngStyle]="{'color': parsePlaceColor(medal.place)}" matTooltip="{{parsePlace(medal.place)}}">
+                        workspace_premium
+                    </mat-icon>
+                    <div class="white-text">
+                        {{medal.event}}
+                    </div>
                 </div>
             }   
         </div>
