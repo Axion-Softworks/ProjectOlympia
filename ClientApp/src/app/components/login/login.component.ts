@@ -23,6 +23,7 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent {
 
   formgroup: FormGroup;
+  loginFailed = false;
 
   constructor(private userService: UserService) {
     this.formgroup = new FormGroup(
@@ -31,6 +32,8 @@ export class LoginComponent {
   }
 
   login(): void {
-    this.userService.login(this.formgroup);
+    this.loginFailed = false;
+
+    this.userService.login(this.formgroup).then((response) => this.loginFailed = !response);
   }
 }

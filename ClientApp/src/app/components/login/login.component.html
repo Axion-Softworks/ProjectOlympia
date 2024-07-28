@@ -7,8 +7,11 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Password</mat-label>
-    <input matInput type="password" formControlName="password">
+    <input matInput type="password" formControlName="password">    
   </mat-form-field>
+  <div *ngIf="loginFailed" class="error-message-wrapper">
+    <div class="error-message">An error occured logging in. Please try again.</div> 
+  </div>
 
   <button class="button-affirmative" mat-raised-button type="submit">Login</button>
 </form>

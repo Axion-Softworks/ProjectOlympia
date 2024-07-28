@@ -27,16 +27,18 @@ export class UserService extends BaseService {
       setTimeout(() => this.onLoggedIn.next(this.getId()), 200);
   }
 
-  public login(formgroup: FormGroup): void {
-    this.http.post<User>(this.baseUrl + 'api/login', formgroup.value).subscribe({
-      next: (result) => {
-        this.user = result; sessionStorage.setItem('user', JSON.stringify(result));
+  public login(formgroup: FormGroup): Promise<boolean> {
+    return new Promise((reject) => {
+        this.http.post<User>(this.baseUrl + 'api/login', formgroup.value).subscribe({
+          next: (result) => {
+            this.user = result; sessionStorage.setItem('user', JSON.stringify(result));
 
-        this.onLoggedIn.next(result.id); //triggers ws auth
-        this.router.navigate(["home"]);
-      },
-      error: (e) => console.error(e)
-    });
+            this.onLoggedIn.next(result.id); //triggers ws auth
+            this.router.navigate(["home"]);
+          },
+          error: (e) => { reject(false) }
+        });
+    })
   }
 
   public logOut(): void {

@@ -3,3 +3,13 @@
     flex-direction: column;
     flex-wrap: wrap;
 }
+
+.error-message {
+    color: red;
+}
+
+.error-message-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 22px;
+}
